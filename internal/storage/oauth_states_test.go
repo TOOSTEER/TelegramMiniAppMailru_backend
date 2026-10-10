@@ -42,7 +42,7 @@ func TestOAuthStates(t *testing.T) {
 	s := NewOAuthStates(pool, time.Minute)
 
 	state := "test-" + t.Name() + "-" + time.Now().Format(time.RFC3339Nano)
-	if err := s.Save(ctx, state, "the-verifier"); err != nil {
+	if err := s.Save(ctx, state, authstate.Entry{Verifier: "the-verifier", TelegramID: 42}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -54,8 +54,8 @@ func TestOAuthStates(t *testing.T) {
 		t.Error("state хранится в открытом виде, а должен только хэш")
 	}
 
-	if v, err := s.Pop(ctx, state); err != nil || v != "the-verifier" {
-		t.Fatalf("Pop() = %q, %v; want the-verifier, nil", v, err)
+	if e, err := s.Pop(ctx, state); err != nil || e != (authstate.Entry{Verifier: "the-verifier", TelegramID: 42}) {
+		t.Fatalf("Pop() = %+v, %v; want the-verifier/42, nil", e, err)
 	}
 	if _, err := s.Pop(ctx, state); !errors.Is(err, authstate.ErrNotFound) {
 		t.Errorf("повторный Pop(): err = %v, want ErrNotFound", err)
@@ -71,7 +71,7 @@ func TestOAuthStatesExpired(t *testing.T) {
 	s := NewOAuthStates(pool, 10*time.Millisecond)
 
 	state := "test-" + t.Name() + "-" + time.Now().Format(time.RFC3339Nano)
-	if err := s.Save(ctx, state, "v"); err != nil {
+	if err := s.Save(ctx, state, authstate.Entry{Verifier: "v", TelegramID: 42}); err != nil {
 		t.Fatal(err)
 	}
 	time.Sleep(50 * time.Millisecond)
@@ -95,7 +95,7 @@ func TestOAuthStatesConcurrentPop(t *testing.T) {
 	s := NewOAuthStates(pool, time.Minute)
 
 	state := "test-" + t.Name() + "-" + time.Now().Format(time.RFC3339Nano)
-	if err := s.Save(ctx, state, "v"); err != nil {
+	if err := s.Save(ctx, state, authstate.Entry{Verifier: "v", TelegramID: 42}); err != nil {
 		t.Fatal(err)
 	}
 

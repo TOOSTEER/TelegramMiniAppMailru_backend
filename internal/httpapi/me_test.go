@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"go.uber.org/zap/zaptest/observer"
 
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/tgauth"
 )
 
@@ -53,6 +55,38 @@ func TestMe(t *testing.T) {
 	}
 }
 
+func TestMeLinked(t *testing.T) {
+	users := newFakeUsers()
+	users.links[42] = storageLink(42, 1001)
+	r := newTestRouter(t, Deps{Users: users})
+
+	w := getWithAuth(t, r, "/api/me", "tma "+testInitData(testBotToken, time.Now()))
+
+	var body struct {
+		VKID struct {
+			Linked bool   `json:"linked"`
+			UserID int64  `json:"user_id"`
+			Email  string `json:"email"`
+		} `json:"vkid"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	if !body.VKID.Linked || body.VKID.UserID != 1001 || body.VKID.Email != "ivan@mail.ru" {
+		t.Errorf("vkid = %+v, body: %s", body.VKID, w.Body.String())
+	}
+}
+
+func TestMeNotLinked(t *testing.T) {
+	r := newTestRouter(t, Deps{})
+
+	w := getWithAuth(t, r, "/api/me", "tma "+testInitData(testBotToken, time.Now()))
+
+	if want := `"vkid":{"linked":false}`; !strings.Contains(w.Body.String(), want) {
+		t.Errorf("body = %s, want %s", w.Body.String(), want)
+	}
+}
+
 func TestMeUnauthorized(t *testing.T) {
 	tests := map[string]struct {
 		authorization string
@@ -82,4 +116,8 @@ func TestMeUnauthorized(t *testing.T) {
 			}
 		})
 	}
+}
+
+func storageLink(telegramID, vkUserID int64) storage.VKIDLink {
+	return storage.VKIDLink{TelegramID: telegramID, VKUserID: vkUserID, Name: "Ivan Ivanov", Email: "ivan@mail.ru"}
 }

@@ -69,6 +69,7 @@ func run(cfg config.Config, log *zap.Logger) error {
 		DB:     pool,
 		VKID:   vkid.New(cfg.VKID),
 		States: storage.NewOAuthStates(pool, cfg.VKID.StateTTL),
+		Users:  storage.NewUsers(pool),
 	})
 	if err != nil {
 		return err

@@ -2,6 +2,7 @@ package httpapi
 
 import (
 	"context"
+	"sync"
 	"testing"
 	"time"
 
@@ -10,12 +11,51 @@ import (
 
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/authstate"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
 )
 
 type fakePinger struct{ err error }
 
 func (p fakePinger) Ping(context.Context) error { return p.err }
+
+type fakeUsers struct {
+	mu    sync.Mutex
+	links map[int64]storage.VKIDLink
+	err   error
+}
+
+func newFakeUsers() *fakeUsers {
+	return &fakeUsers{links: make(map[int64]storage.VKIDLink)}
+}
+
+func (f *fakeUsers) LinkVKID(_ context.Context, l storage.VKIDLink) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.err != nil {
+		return f.err
+	}
+	for tgID, existing := range f.links {
+		if existing.VKUserID == l.VKUserID && tgID != l.TelegramID {
+			return storage.ErrVKIDAlreadyLinked
+		}
+	}
+	f.links[l.TelegramID] = l
+	return nil
+}
+
+func (f *fakeUsers) FindByTelegramID(_ context.Context, telegramID int64) (storage.User, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.err != nil {
+		return storage.User{}, f.err
+	}
+	l, ok := f.links[telegramID]
+	if !ok {
+		return storage.User{}, storage.ErrUserNotFound
+	}
+	return storage.User{TelegramID: l.TelegramID, VKUserID: l.VKUserID, Name: l.Name, Email: l.Email, LinkedAt: time.Now()}, nil
+}
 
 type fakeVKID struct {
 	*vkid.Client
@@ -69,6 +109,9 @@ func newTestRouter(t *testing.T, deps Deps) *gin.Engine {
 	}
 	if deps.States == nil {
 		deps.States = authstate.NewMemory(time.Minute)
+	}
+	if deps.Users == nil {
+		deps.Users = newFakeUsers()
 	}
 
 	r, err := NewRouter(config.Config{

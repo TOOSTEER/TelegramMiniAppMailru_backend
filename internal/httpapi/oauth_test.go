@@ -1,18 +1,20 @@
 package httpapi
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zaptest/observer"
 
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
 )
+
+const testTelegramID = 42
 
 func get(t *testing.T, h http.Handler, target string) *httptest.ResponseRecorder {
 	t.Helper()
@@ -35,7 +37,25 @@ func location(t *testing.T, w *httptest.ResponseRecorder) *url.URL {
 
 func startLogin(t *testing.T, r *gin.Engine) (state string) {
 	t.Helper()
-	return location(t, get(t, r, "/oauth/login")).Query().Get("state")
+	req := httptest.NewRequest(http.MethodPost, "/api/vkid/login", nil)
+	req.Header.Set("Authorization", "tma "+testInitData(testBotToken, time.Now()))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("/api/vkid/login: status = %d, body: %s", w.Code, w.Body.String())
+	}
+	var body struct {
+		AuthURL string `json:"auth_url"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	u, err := url.Parse(body.AuthURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return u.Query().Get("state")
 }
 
 func assertBackToMiniApp(t *testing.T, w *httptest.ResponseRecorder, wantResult string) {
@@ -49,24 +69,52 @@ func assertBackToMiniApp(t *testing.T, w *httptest.ResponseRecorder, wantResult 
 	}
 }
 
-func TestOAuthLoginRedirectsToVKID(t *testing.T) {
+func TestVKIDLogin(t *testing.T) {
 	r := newTestRouter(t, Deps{})
 
-	w := get(t, r, "/oauth/login")
+	req := httptest.NewRequest(http.MethodPost, "/api/vkid/login", nil)
+	req.Header.Set("Authorization", "tma "+testInitData(testBotToken, time.Now()))
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
 
-	loc := location(t, w)
-	if loc.Host != "id.vk.ru" || loc.Query().Get("provider") != "mail_ru" || loc.Query().Get("state") == "" {
-		t.Errorf("Location = %s, want id.vk.ru with provider=mail_ru and state", loc)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", w.Code)
 	}
-	if w.Header().Get("Referrer-Policy") != "no-referrer" {
-		t.Error("нет заголовка Referrer-Policy: no-referrer")
+	var body struct {
+		AuthURL string `json:"auth_url"`
+	}
+	_ = json.Unmarshal(w.Body.Bytes(), &body)
+	u, err := url.Parse(body.AuthURL)
+	if err != nil || u.Host != "id.vk.ru" || u.Query().Get("provider") != "mail_ru" || u.Query().Get("state") == "" {
+		t.Errorf("auth_url = %q", body.AuthURL)
 	}
 }
 
-func TestOAuthCallbackSuccess(t *testing.T) {
-	core, logs := observer.New(zap.InfoLevel)
-	r := newTestRouter(t, Deps{Log: zap.New(core)})
-	callback := "/oauth/callback?code=c&device_id=d&state=" + startLogin(t, r)
+func TestVKIDLoginRequiresInitData(t *testing.T) {
+	r := newTestRouter(t, Deps{})
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/api/vkid/login", nil))
+
+	if w.Code != http.StatusUnauthorized {
+		t.Errorf("status = %d, want 401", w.Code)
+	}
+}
+
+func TestOldGetLoginRemoved(t *testing.T) {
+	r := newTestRouter(t, Deps{})
+
+	if w := get(t, r, "/oauth/login"); w.Code != http.StatusNotFound {
+		t.Errorf("GET /oauth/login: status = %d, want 404", w.Code)
+	}
+}
+
+func TestOAuthCallbackLinksAccount(t *testing.T) {
+	users := newFakeUsers()
+	vk := newFakeVKID()
+	vk.tokens = vkid.Tokens{AccessToken: "at", RefreshToken: "rt", ExpiresIn: time.Hour, Scope: "email"}
+	r := newTestRouter(t, Deps{Users: users, VKID: vk})
+	callback := "/oauth/callback?code=c&device_id=dev-1&state=" + startLogin(t, r)
 
 	w := get(t, r, callback)
 
@@ -74,8 +122,14 @@ func TestOAuthCallbackSuccess(t *testing.T) {
 	if w.Header().Get("Cache-Control") != "no-store" {
 		t.Error("нет заголовка Cache-Control: no-store")
 	}
-	if logs.FilterMessage("вход через VK ID выполнен").Len() != 1 {
-		t.Error("в логе нет записи об успешном входе")
+
+	got, ok := users.links[testTelegramID]
+	if !ok {
+		t.Fatalf("привязка для telegram_id %d не сохранена", testTelegramID)
+	}
+	if got.VKUserID != 42 || got.Name != "Ivan Ivanov" || got.Email != "ivan@mail.ru" ||
+		got.AccessToken != "at" || got.RefreshToken != "rt" || got.DeviceID != "dev-1" || got.ExpiresIn != time.Hour {
+		t.Errorf("сохранено %+v", got)
 	}
 
 	assertBackToMiniApp(t, get(t, r, callback), resultExpired)
@@ -83,7 +137,7 @@ func TestOAuthCallbackSuccess(t *testing.T) {
 
 func TestOAuthCallbackErrors(t *testing.T) {
 	tests := map[string]struct {
-		vk         func(*fakeVKID)
+		setup      func(*fakeVKID, *fakeUsers)
 		query      func(state string) string
 		wantResult string
 	}{
@@ -100,12 +154,24 @@ func TestOAuthCallbackErrors(t *testing.T) {
 			wantResult: resultDenied,
 		},
 		"обмен кода не удался": {
-			vk:         func(f *fakeVKID) { f.exchangeErr = &vkid.APIError{Status: 200, Code: "invalid_grant"} },
+			setup:      func(f *fakeVKID, _ *fakeUsers) { f.exchangeErr = &vkid.APIError{Status: 200, Code: "invalid_grant"} },
 			query:      func(s string) string { return "code=c&device_id=d&state=" + s },
 			wantResult: resultFailed,
 		},
 		"user_info не удался": {
-			vk:         func(f *fakeVKID) { f.userInfoErr = errors.New("timeout") },
+			setup:      func(f *fakeVKID, _ *fakeUsers) { f.userInfoErr = errors.New("timeout") },
+			query:      func(s string) string { return "code=c&device_id=d&state=" + s },
+			wantResult: resultFailed,
+		},
+		"аккаунт VK ID привязан к другому Telegram": {
+			setup: func(f *fakeVKID, u *fakeUsers) {
+				u.links[7] = storageLink(7, f.user.ID)
+			},
+			query:      func(s string) string { return "code=c&device_id=d&state=" + s },
+			wantResult: resultConflict,
+		},
+		"база недоступна": {
+			setup:      func(_ *fakeVKID, u *fakeUsers) { u.err = errors.New("connection refused") },
 			query:      func(s string) string { return "code=c&device_id=d&state=" + s },
 			wantResult: resultFailed,
 		},
@@ -113,11 +179,11 @@ func TestOAuthCallbackErrors(t *testing.T) {
 
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			vk := newFakeVKID()
-			if tt.vk != nil {
-				tt.vk(vk)
+			vk, users := newFakeVKID(), newFakeUsers()
+			if tt.setup != nil {
+				tt.setup(vk, users)
 			}
-			r := newTestRouter(t, Deps{VKID: vk})
+			r := newTestRouter(t, Deps{VKID: vk, Users: users})
 
 			assertBackToMiniApp(t, get(t, r, "/oauth/callback?"+tt.query(startLogin(t, r))), tt.wantResult)
 		})

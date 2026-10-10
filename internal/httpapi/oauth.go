@@ -4,32 +4,36 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/authstate"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
 )
 
 const (
-	resultOK      = "vkid_ok"
-	resultExpired = "vkid_expired"
-	resultDenied  = "vkid_denied"
-	resultFailed  = "vkid_failed"
+	resultOK       = "vkid_ok"
+	resultExpired  = "vkid_expired"
+	resultDenied   = "vkid_denied"
+	resultConflict = "vkid_conflict"
+	resultFailed   = "vkid_failed"
 )
 
-func (h *handler) oauthLogin(c *gin.Context) {
+func (h *handler) vkidLogin(c *gin.Context) {
 	state := vkid.NewState()
 	verifier := vkid.NewVerifier()
 
-	if err := h.states.Save(c.Request.Context(), state, verifier); err != nil {
+	entry := authstate.Entry{Verifier: verifier, TelegramID: initData(c).User.ID}
+	if err := h.states.Save(c.Request.Context(), state, entry); err != nil {
 		_ = c.Error(err)
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal"})
 		return
 	}
 
-	c.Redirect(http.StatusFound, h.vkid.AuthURL(state, verifier))
+	c.PureJSON(http.StatusOK, gin.H{"auth_url": h.vkid.AuthURL(state, verifier)})
 }
 
 func (h *handler) oauthCallback(c *gin.Context) {
@@ -53,7 +57,7 @@ func (h *handler) oauthCallback(c *gin.Context) {
 
 	ctx := c.Request.Context()
 
-	verifier, err := h.states.Pop(ctx, state)
+	entry, err := h.states.Pop(ctx, state)
 	if errors.Is(err, authstate.ErrNotFound) {
 		h.backToMiniApp(c, resultExpired)
 		return
@@ -64,7 +68,7 @@ func (h *handler) oauthCallback(c *gin.Context) {
 		return
 	}
 
-	tokens, err := h.vkid.Exchange(ctx, code, verifier, deviceID, state)
+	tokens, err := h.vkid.Exchange(ctx, code, entry.Verifier, deviceID, state)
 	if err != nil {
 		_ = c.Error(err)
 		h.backToMiniApp(c, resultFailed)
@@ -78,13 +82,36 @@ func (h *handler) oauthCallback(c *gin.Context) {
 		return
 	}
 
-	h.log.Info("вход через VK ID выполнен",
+	err = h.users.LinkVKID(ctx, storage.VKIDLink{
+		TelegramID:   entry.TelegramID,
+		VKUserID:     user.ID,
+		Name:         strings.TrimSpace(user.FirstName + " " + user.LastName),
+		Email:        user.Email,
+		AccessToken:  tokens.AccessToken,
+		RefreshToken: tokens.RefreshToken,
+		DeviceID:     deviceID,
+		Scope:        tokens.Scope,
+		ExpiresIn:    tokens.ExpiresIn,
+	})
+	if errors.Is(err, storage.ErrVKIDAlreadyLinked) {
+		h.log.Warn("аккаунт VK ID уже привязан к другому пользователю Telegram",
+			zap.Int64("telegram_id", entry.TelegramID),
+			zap.Int64("vk_user_id", user.ID),
+		)
+		h.backToMiniApp(c, resultConflict)
+		return
+	}
+	if err != nil {
+		_ = c.Error(err)
+		h.backToMiniApp(c, resultFailed)
+		return
+	}
+
+	h.log.Info("аккаунт VK ID привязан",
+		zap.Int64("telegram_id", entry.TelegramID),
 		zap.Int64("vk_user_id", user.ID),
-		zap.String("name", user.FirstName+" "+user.LastName),
 		zap.Bool("has_email", user.Email != ""),
 		zap.String("scope", tokens.Scope),
-		zap.Duration("access_ttl", tokens.ExpiresIn),
-		zap.Bool("has_refresh", tokens.RefreshToken != ""),
 	)
 
 	h.backToMiniApp(c, resultOK)

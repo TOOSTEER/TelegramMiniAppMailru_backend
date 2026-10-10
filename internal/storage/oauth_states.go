@@ -22,11 +22,11 @@ func NewOAuthStates(pool *pgxpool.Pool, ttl time.Duration) *OAuthStates {
 	return &OAuthStates{pool: pool, ttl: ttl}
 }
 
-func (s *OAuthStates) Save(ctx context.Context, state, verifier string) error {
+func (s *OAuthStates) Save(ctx context.Context, state string, entry authstate.Entry) error {
 	_, err := s.pool.Exec(ctx, `
-		INSERT INTO oauth_states (state_hash, code_verifier, expires_at)
-		VALUES ($1, $2, now() + make_interval(secs => $3))`,
-		hashState(state), verifier, s.ttl.Seconds(),
+		INSERT INTO oauth_states (state_hash, code_verifier, telegram_id, expires_at)
+		VALUES ($1, $2, $3, now() + make_interval(secs => $4))`,
+		hashState(state), entry.Verifier, entry.TelegramID, s.ttl.Seconds(),
 	)
 	if err != nil {
 		return fmt.Errorf("сохранение state: %w", err)
@@ -34,30 +34,30 @@ func (s *OAuthStates) Save(ctx context.Context, state, verifier string) error {
 	return nil
 }
 
-func (s *OAuthStates) Pop(ctx context.Context, state string) (string, error) {
+func (s *OAuthStates) Pop(ctx context.Context, state string) (authstate.Entry, error) {
 	var (
-		verifier string
-		valid    bool
+		entry authstate.Entry
+		valid bool
 	)
 
 	err := s.pool.QueryRow(ctx, `
 		DELETE FROM oauth_states
 		WHERE state_hash = $1
-		RETURNING code_verifier, expires_at > now()`,
+		RETURNING code_verifier, telegram_id, expires_at > now()`,
 		hashState(state),
-	).Scan(&verifier, &valid)
+	).Scan(&entry.Verifier, &entry.TelegramID, &valid)
 
 	if errors.Is(err, pgx.ErrNoRows) {
-		return "", authstate.ErrNotFound
+		return authstate.Entry{}, authstate.ErrNotFound
 	}
 	if err != nil {
-		return "", fmt.Errorf("чтение state: %w", err)
+		return authstate.Entry{}, fmt.Errorf("чтение state: %w", err)
 	}
 	if !valid {
-		return "", authstate.ErrNotFound
+		return authstate.Entry{}, authstate.ErrNotFound
 	}
 
-	return verifier, nil
+	return entry, nil
 }
 
 func hashState(state string) []byte {

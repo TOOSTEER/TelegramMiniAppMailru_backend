@@ -9,8 +9,13 @@ import (
 
 var ErrNotFound = errors.New("state не найден, уже использован или просрочен")
 
+type Entry struct {
+	Verifier   string
+	TelegramID int64
+}
+
 type item struct {
-	verifier  string
+	entry     Entry
 	expiresAt time.Time
 }
 
@@ -25,7 +30,7 @@ func NewMemory(ttl time.Duration) *Memory {
 	return &Memory{ttl: ttl, now: time.Now, items: make(map[string]item)}
 }
 
-func (m *Memory) Save(_ context.Context, state, verifier string) error {
+func (m *Memory) Save(_ context.Context, state string, entry Entry) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -36,11 +41,11 @@ func (m *Memory) Save(_ context.Context, state, verifier string) error {
 		}
 	}
 
-	m.items[state] = item{verifier: verifier, expiresAt: now.Add(m.ttl)}
+	m.items[state] = item{entry: entry, expiresAt: now.Add(m.ttl)}
 	return nil
 }
 
-func (m *Memory) Pop(_ context.Context, state string) (string, error) {
+func (m *Memory) Pop(_ context.Context, state string) (Entry, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -48,7 +53,7 @@ func (m *Memory) Pop(_ context.Context, state string) (string, error) {
 	delete(m.items, state)
 
 	if !ok || m.now().After(it.expiresAt) {
-		return "", ErrNotFound
+		return Entry{}, ErrNotFound
 	}
-	return it.verifier, nil
+	return it.entry, nil
 }
