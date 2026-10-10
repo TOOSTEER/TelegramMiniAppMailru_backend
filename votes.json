@@ -1,0 +1,1298 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:41:00Z"
+  },
+  {
+    "id": 2,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:48:00Z"
+  },
+  {
+    "id": 3,
+    "user_id": 4,
+    "target_type": "post",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:54:00Z"
+  },
+  {
+    "id": 4,
+    "user_id": 8,
+    "target_type": "post",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:54:00Z"
+  },
+  {
+    "id": 5,
+    "user_id": 5,
+    "target_type": "post",
+    "target_id": 1,
+    "value": -1,
+    "created_at": "2026-10-10T11:58:00Z"
+  },
+  {
+    "id": 6,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:14:00Z"
+  },
+  {
+    "id": 7,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:22:00Z"
+  },
+  {
+    "id": 8,
+    "user_id": 6,
+    "target_type": "post",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:46:00Z"
+  },
+  {
+    "id": 9,
+    "user_id": 7,
+    "target_type": "post",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:47:00Z"
+  },
+  {
+    "id": 10,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:14:00Z"
+  },
+  {
+    "id": 11,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T10:56:00Z"
+  },
+  {
+    "id": 12,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:43:00Z"
+  },
+  {
+    "id": 13,
+    "user_id": 9,
+    "target_type": "post",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:16:00Z"
+  },
+  {
+    "id": 14,
+    "user_id": 10,
+    "target_type": "post",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:13:00Z"
+  },
+  {
+    "id": 15,
+    "user_id": 5,
+    "target_type": "post",
+    "target_id": 3,
+    "value": -1,
+    "created_at": "2026-10-10T11:50:00Z"
+  },
+  {
+    "id": 16,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T10:17:00Z"
+  },
+  {
+    "id": 17,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T10:40:00Z"
+  },
+  {
+    "id": 18,
+    "user_id": 7,
+    "target_type": "post",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T10:36:00Z"
+  },
+  {
+    "id": 19,
+    "user_id": 10,
+    "target_type": "post",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T08:14:00Z"
+  },
+  {
+    "id": 20,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T11:49:00Z"
+  },
+  {
+    "id": 21,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T11:23:00Z"
+  },
+  {
+    "id": 22,
+    "user_id": 8,
+    "target_type": "post",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T10:53:00Z"
+  },
+  {
+    "id": 23,
+    "user_id": 9,
+    "target_type": "post",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T11:03:00Z"
+  },
+  {
+    "id": 24,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 6,
+    "value": 1,
+    "created_at": "2026-10-10T06:59:00Z"
+  },
+  {
+    "id": 25,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 6,
+    "value": 1,
+    "created_at": "2026-10-10T08:30:00Z"
+  },
+  {
+    "id": 26,
+    "user_id": 4,
+    "target_type": "post",
+    "target_id": 6,
+    "value": -1,
+    "created_at": "2026-10-10T06:53:00Z"
+  },
+  {
+    "id": 27,
+    "user_id": 6,
+    "target_type": "post",
+    "target_id": 6,
+    "value": 1,
+    "created_at": "2026-10-10T09:53:00Z"
+  },
+  {
+    "id": 28,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-09T18:14:00Z"
+  },
+  {
+    "id": 29,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-10T02:25:00Z"
+  },
+  {
+    "id": 30,
+    "user_id": 4,
+    "target_type": "post",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-09T23:24:00Z"
+  },
+  {
+    "id": 31,
+    "user_id": 5,
+    "target_type": "post",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-09T21:38:00Z"
+  },
+  {
+    "id": 32,
+    "user_id": 8,
+    "target_type": "post",
+    "target_id": 7,
+    "value": -1,
+    "created_at": "2026-10-10T00:49:00Z"
+  },
+  {
+    "id": 33,
+    "user_id": 10,
+    "target_type": "post",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-09T22:20:00Z"
+  },
+  {
+    "id": 34,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-09T14:59:00Z"
+  },
+  {
+    "id": 35,
+    "user_id": 9,
+    "target_type": "post",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-09T15:08:00Z"
+  },
+  {
+    "id": 36,
+    "user_id": 8,
+    "target_type": "post",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-09T15:28:00Z"
+  },
+  {
+    "id": 37,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 8,
+    "value": -1,
+    "created_at": "2026-10-09T17:48:00Z"
+  },
+  {
+    "id": 38,
+    "user_id": 6,
+    "target_type": "post",
+    "target_id": 8,
+    "value": -1,
+    "created_at": "2026-10-09T10:21:00Z"
+  },
+  {
+    "id": 39,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T09:43:00Z"
+  },
+  {
+    "id": 40,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T06:27:00Z"
+  },
+  {
+    "id": 41,
+    "user_id": 5,
+    "target_type": "post",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T04:18:00Z"
+  },
+  {
+    "id": 42,
+    "user_id": 7,
+    "target_type": "post",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T08:18:00Z"
+  },
+  {
+    "id": 43,
+    "user_id": 4,
+    "target_type": "post",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T08:08:00Z"
+  },
+  {
+    "id": 44,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T01:02:00Z"
+  },
+  {
+    "id": 45,
+    "user_id": 2,
+    "target_type": "post",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T00:57:00Z"
+  },
+  {
+    "id": 46,
+    "user_id": 6,
+    "target_type": "post",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T03:51:00Z"
+  },
+  {
+    "id": 47,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 11,
+    "value": 1,
+    "created_at": "2026-10-07T12:27:00Z"
+  },
+  {
+    "id": 48,
+    "user_id": 4,
+    "target_type": "post",
+    "target_id": 11,
+    "value": 1,
+    "created_at": "2026-10-07T19:54:00Z"
+  },
+  {
+    "id": 49,
+    "user_id": 1,
+    "target_type": "post",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T10:22:00Z"
+  },
+  {
+    "id": 50,
+    "user_id": 7,
+    "target_type": "post",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T09:09:00Z"
+  },
+  {
+    "id": 51,
+    "user_id": 3,
+    "target_type": "post",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T10:37:00Z"
+  },
+  {
+    "id": 52,
+    "user_id": 5,
+    "target_type": "post",
+    "target_id": 12,
+    "value": -1,
+    "created_at": "2026-10-10T10:36:00Z"
+  },
+  {
+    "id": 53,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:56:00Z"
+  },
+  {
+    "id": 54,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:57:00Z"
+  },
+  {
+    "id": 55,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:55:00Z"
+  },
+  {
+    "id": 56,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 1,
+    "value": 1,
+    "created_at": "2026-10-10T11:54:00Z"
+  },
+  {
+    "id": 57,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 1,
+    "value": -1,
+    "created_at": "2026-10-10T11:56:00Z"
+  },
+  {
+    "id": 58,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:56:00Z"
+  },
+  {
+    "id": 59,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:55:00Z"
+  },
+  {
+    "id": 60,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 2,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 61,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 2,
+    "value": -1,
+    "created_at": "2026-10-10T11:55:00Z"
+  },
+  {
+    "id": 62,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 63,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 64,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 3,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 65,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 3,
+    "value": -1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 66,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T11:35:00Z"
+  },
+  {
+    "id": 67,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T11:41:00Z"
+  },
+  {
+    "id": 68,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T11:40:00Z"
+  },
+  {
+    "id": 69,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 4,
+    "value": 1,
+    "created_at": "2026-10-10T11:23:00Z"
+  },
+  {
+    "id": 70,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 4,
+    "value": -1,
+    "created_at": "2026-10-10T11:25:00Z"
+  },
+  {
+    "id": 71,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T11:55:00Z"
+  },
+  {
+    "id": 72,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T11:48:00Z"
+  },
+  {
+    "id": 73,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 5,
+    "value": 1,
+    "created_at": "2026-10-10T11:47:00Z"
+  },
+  {
+    "id": 74,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 6,
+    "value": 1,
+    "created_at": "2026-10-10T11:57:00Z"
+  },
+  {
+    "id": 75,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 6,
+    "value": 1,
+    "created_at": "2026-10-10T11:46:00Z"
+  },
+  {
+    "id": 76,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-10T11:26:00Z"
+  },
+  {
+    "id": 77,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-10T11:10:00Z"
+  },
+  {
+    "id": 78,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-10T10:35:00Z"
+  },
+  {
+    "id": 79,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 7,
+    "value": 1,
+    "created_at": "2026-10-10T10:47:00Z"
+  },
+  {
+    "id": 80,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 7,
+    "value": -1,
+    "created_at": "2026-10-10T11:58:00Z"
+  },
+  {
+    "id": 81,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-10T11:13:00Z"
+  },
+  {
+    "id": 82,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-10T11:19:00Z"
+  },
+  {
+    "id": 83,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-10T11:03:00Z"
+  },
+  {
+    "id": 84,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 8,
+    "value": 1,
+    "created_at": "2026-10-10T10:53:00Z"
+  },
+  {
+    "id": 85,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 8,
+    "value": -1,
+    "created_at": "2026-10-10T11:57:00Z"
+  },
+  {
+    "id": 86,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T11:47:00Z"
+  },
+  {
+    "id": 87,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T11:27:00Z"
+  },
+  {
+    "id": 88,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 9,
+    "value": 1,
+    "created_at": "2026-10-10T11:43:00Z"
+  },
+  {
+    "id": 89,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T09:32:00Z"
+  },
+  {
+    "id": 90,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T08:43:00Z"
+  },
+  {
+    "id": 91,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T08:32:00Z"
+  },
+  {
+    "id": 92,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 10,
+    "value": 1,
+    "created_at": "2026-10-10T06:29:00Z"
+  },
+  {
+    "id": 93,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 10,
+    "value": -1,
+    "created_at": "2026-10-10T09:39:00Z"
+  },
+  {
+    "id": 94,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 11,
+    "value": 1,
+    "created_at": "2026-10-10T11:33:00Z"
+  },
+  {
+    "id": 95,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 11,
+    "value": 1,
+    "created_at": "2026-10-10T09:03:00Z"
+  },
+  {
+    "id": 96,
+    "user_id": 5,
+    "target_type": "comment",
+    "target_id": 11,
+    "value": 1,
+    "created_at": "2026-10-10T06:16:00Z"
+  },
+  {
+    "id": 97,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T11:47:00Z"
+  },
+  {
+    "id": 98,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T11:31:00Z"
+  },
+  {
+    "id": 99,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T09:00:00Z"
+  },
+  {
+    "id": 100,
+    "user_id": 5,
+    "target_type": "comment",
+    "target_id": 12,
+    "value": 1,
+    "created_at": "2026-10-10T08:51:00Z"
+  },
+  {
+    "id": 101,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 12,
+    "value": -1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 102,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 13,
+    "value": 1,
+    "created_at": "2026-10-10T11:36:00Z"
+  },
+  {
+    "id": 103,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 13,
+    "value": 1,
+    "created_at": "2026-10-10T11:26:00Z"
+  },
+  {
+    "id": 104,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 13,
+    "value": 1,
+    "created_at": "2026-10-10T11:03:00Z"
+  },
+  {
+    "id": 105,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 13,
+    "value": 1,
+    "created_at": "2026-10-10T11:13:00Z"
+  },
+  {
+    "id": 106,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 13,
+    "value": -1,
+    "created_at": "2026-10-10T11:42:00Z"
+  },
+  {
+    "id": 107,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 14,
+    "value": 1,
+    "created_at": "2026-10-10T11:38:00Z"
+  },
+  {
+    "id": 108,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 14,
+    "value": 1,
+    "created_at": "2026-10-10T11:53:00Z"
+  },
+  {
+    "id": 109,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 14,
+    "value": 1,
+    "created_at": "2026-10-10T11:51:00Z"
+  },
+  {
+    "id": 110,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 15,
+    "value": 1,
+    "created_at": "2026-10-10T11:42:00Z"
+  },
+  {
+    "id": 111,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 15,
+    "value": 1,
+    "created_at": "2026-10-10T11:35:00Z"
+  },
+  {
+    "id": 112,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 15,
+    "value": 1,
+    "created_at": "2026-10-10T11:45:00Z"
+  },
+  {
+    "id": 113,
+    "user_id": 5,
+    "target_type": "comment",
+    "target_id": 16,
+    "value": 1,
+    "created_at": "2026-10-10T11:34:00Z"
+  },
+  {
+    "id": 114,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 16,
+    "value": 1,
+    "created_at": "2026-10-10T11:39:00Z"
+  },
+  {
+    "id": 115,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 16,
+    "value": 1,
+    "created_at": "2026-10-10T11:52:00Z"
+  },
+  {
+    "id": 116,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 17,
+    "value": 1,
+    "created_at": "2026-10-10T10:50:00Z"
+  },
+  {
+    "id": 117,
+    "user_id": 5,
+    "target_type": "comment",
+    "target_id": 17,
+    "value": 1,
+    "created_at": "2026-10-10T08:04:00Z"
+  },
+  {
+    "id": 118,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 17,
+    "value": 1,
+    "created_at": "2026-10-10T11:32:00Z"
+  },
+  {
+    "id": 119,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 17,
+    "value": 1,
+    "created_at": "2026-10-10T11:31:00Z"
+  },
+  {
+    "id": 120,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 18,
+    "value": 1,
+    "created_at": "2026-10-10T10:22:00Z"
+  },
+  {
+    "id": 121,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 18,
+    "value": 1,
+    "created_at": "2026-10-10T11:01:00Z"
+  },
+  {
+    "id": 122,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 18,
+    "value": 1,
+    "created_at": "2026-10-10T09:06:00Z"
+  },
+  {
+    "id": 123,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 19,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 124,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 19,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 125,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 19,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 126,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 19,
+    "value": -1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 127,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 20,
+    "value": 1,
+    "created_at": "2026-10-10T08:28:00Z"
+  },
+  {
+    "id": 128,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 20,
+    "value": 1,
+    "created_at": "2026-10-10T11:23:00Z"
+  },
+  {
+    "id": 129,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 20,
+    "value": 1,
+    "created_at": "2026-10-10T09:10:00Z"
+  },
+  {
+    "id": 130,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 20,
+    "value": 1,
+    "created_at": "2026-10-10T08:27:00Z"
+  },
+  {
+    "id": 131,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 20,
+    "value": -1,
+    "created_at": "2026-10-10T09:54:00Z"
+  },
+  {
+    "id": 132,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 21,
+    "value": 1,
+    "created_at": "2026-10-10T11:12:00Z"
+  },
+  {
+    "id": 133,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 21,
+    "value": 1,
+    "created_at": "2026-10-10T10:23:00Z"
+  },
+  {
+    "id": 134,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 21,
+    "value": 1,
+    "created_at": "2026-10-10T10:13:00Z"
+  },
+  {
+    "id": 135,
+    "user_id": 7,
+    "target_type": "comment",
+    "target_id": 22,
+    "value": 1,
+    "created_at": "2026-10-10T10:55:00Z"
+  },
+  {
+    "id": 136,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 22,
+    "value": 1,
+    "created_at": "2026-10-10T11:53:00Z"
+  },
+  {
+    "id": 137,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 22,
+    "value": 1,
+    "created_at": "2026-10-10T11:57:00Z"
+  },
+  {
+    "id": 138,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 22,
+    "value": -1,
+    "created_at": "2026-10-10T11:58:00Z"
+  },
+  {
+    "id": 139,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 23,
+    "value": 1,
+    "created_at": "2026-10-09T12:08:00Z"
+  },
+  {
+    "id": 140,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 23,
+    "value": 1,
+    "created_at": "2026-10-09T11:39:00Z"
+  },
+  {
+    "id": 141,
+    "user_id": 10,
+    "target_type": "comment",
+    "target_id": 23,
+    "value": 1,
+    "created_at": "2026-10-09T19:37:00Z"
+  },
+  {
+    "id": 142,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 23,
+    "value": -1,
+    "created_at": "2026-10-09T19:53:00Z"
+  },
+  {
+    "id": 143,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 24,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 144,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 24,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 145,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 24,
+    "value": 1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 146,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 24,
+    "value": -1,
+    "created_at": "2026-10-10T11:59:00Z"
+  },
+  {
+    "id": 147,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 25,
+    "value": 1,
+    "created_at": "2026-10-09T18:41:00Z"
+  },
+  {
+    "id": 148,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 25,
+    "value": 1,
+    "created_at": "2026-10-09T17:01:00Z"
+  },
+  {
+    "id": 149,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 25,
+    "value": 1,
+    "created_at": "2026-10-09T18:07:00Z"
+  },
+  {
+    "id": 150,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 25,
+    "value": 1,
+    "created_at": "2026-10-09T13:02:00Z"
+  },
+  {
+    "id": 151,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 25,
+    "value": -1,
+    "created_at": "2026-10-09T19:30:00Z"
+  },
+  {
+    "id": 152,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 26,
+    "value": 1,
+    "created_at": "2026-10-10T06:56:00Z"
+  },
+  {
+    "id": 153,
+    "user_id": 9,
+    "target_type": "comment",
+    "target_id": 26,
+    "value": 1,
+    "created_at": "2026-10-10T09:12:00Z"
+  },
+  {
+    "id": 154,
+    "user_id": 2,
+    "target_type": "comment",
+    "target_id": 26,
+    "value": 1,
+    "created_at": "2026-10-10T11:55:00Z"
+  },
+  {
+    "id": 155,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 27,
+    "value": 1,
+    "created_at": "2026-10-09T23:04:00Z"
+  },
+  {
+    "id": 156,
+    "user_id": 4,
+    "target_type": "comment",
+    "target_id": 27,
+    "value": 1,
+    "created_at": "2026-10-09T21:41:00Z"
+  },
+  {
+    "id": 157,
+    "user_id": 8,
+    "target_type": "comment",
+    "target_id": 28,
+    "value": 1,
+    "created_at": "2026-10-10T11:04:00Z"
+  },
+  {
+    "id": 158,
+    "user_id": 5,
+    "target_type": "comment",
+    "target_id": 28,
+    "value": 1,
+    "created_at": "2026-10-10T11:19:00Z"
+  },
+  {
+    "id": 159,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 28,
+    "value": 1,
+    "created_at": "2026-10-10T11:11:00Z"
+  },
+  {
+    "id": 160,
+    "user_id": 6,
+    "target_type": "comment",
+    "target_id": 29,
+    "value": 1,
+    "created_at": "2026-10-10T11:42:00Z"
+  },
+  {
+    "id": 161,
+    "user_id": 3,
+    "target_type": "comment",
+    "target_id": 29,
+    "value": 1,
+    "created_at": "2026-10-10T11:49:00Z"
+  },
+  {
+    "id": 162,
+    "user_id": 1,
+    "target_type": "comment",
+    "target_id": 29,
+    "value": 1,
+    "created_at": "2026-10-10T11:27:00Z"
+  }
+]

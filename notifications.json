@@ -1,0 +1,289 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "type": "post_comment",
+    "actor_ids": [
+      8
+    ],
+    "actors_total": 1,
+    "post_id": 7,
+    "comment_id": 19,
+    "target_preview": "Вы бы съели собаку ради интереса?",
+    "content_preview": "Ты чего, собак кушать? Осуждаю, вычислю по айпи и расскажу всем во дворе.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T11:59:00Z",
+    "read_at": null
+  },
+  {
+    "id": 2,
+    "user_id": 1,
+    "type": "post_comment",
+    "actor_ids": [
+      8,
+      9
+    ],
+    "actors_total": 5,
+    "post_id": 8,
+    "comment_id": 24,
+    "target_preview": "На сколько хватит 10000 затяжек в одноразовой электронке?",
+    "content_preview": null,
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": false,
+    "created_at": "2026-10-10T11:58:00Z",
+    "read_at": null
+  },
+  {
+    "id": 3,
+    "user_id": 1,
+    "type": "comment_reply",
+    "actor_ids": [
+      8
+    ],
+    "actors_total": 1,
+    "post_id": 1,
+    "comment_id": 2,
+    "target_preview": "Согласен: граница между «я придумал» и «я сделал» стирается. Инструмент умеет и то, и…",
+    "content_preview": "Но навык проверки результата никто не отменял. Без него «исполнение» превращается в слепое доверие.",
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": true,
+    "can_reply": false,
+    "created_at": "2026-10-10T11:52:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 4,
+    "user_id": 1,
+    "type": "thread_activity",
+    "actor_ids": [
+      6,
+      5
+    ],
+    "actors_total": 4,
+    "post_id": 2,
+    "comment_id": 6,
+    "target_preview": "Адаптивность важнее эффектов. Неоморфизм красиво смотрится в дизайн-системах, но на…",
+    "content_preview": "А есть примеры продуктов, где этот тренд уже сработал? Хочется посмотреть вживую.",
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": true,
+    "can_reply": false,
+    "created_at": "2026-10-10T11:40:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 5,
+    "user_id": 1,
+    "type": "post_vote",
+    "actor_ids": [
+      3,
+      4,
+      10
+    ],
+    "actors_total": 7,
+    "post_id": 7,
+    "comment_id": null,
+    "target_preview": "Вы бы съели собаку ради интереса?",
+    "content_preview": null,
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": false,
+    "can_reply": false,
+    "created_at": "2026-10-10T10:30:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 6,
+    "user_id": 1,
+    "type": "post_comment",
+    "actor_ids": [
+      5
+    ],
+    "actors_total": 1,
+    "post_id": 9,
+    "comment_id": 26,
+    "target_preview": "Почему 90% стартапов закрываются",
+    "content_preview": "Спасибо за подробный ответ, про интервью до разработки очень в точку.",
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": true,
+    "can_reply": false,
+    "created_at": "2026-10-10T04:10:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 7,
+    "user_id": 1,
+    "type": "answer_to_question",
+    "actor_ids": [
+      3
+    ],
+    "actors_total": 1,
+    "post_id": 10,
+    "comment_id": null,
+    "target_preview": "Вы бы съели собаку ради интереса?",
+    "content_preview": "Мне кажется, всё упирается в культурный контекст: то, что для одних еда, для других —…",
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": false,
+    "can_reply": false,
+    "created_at": "2026-10-09T20:00:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 8,
+    "user_id": 1,
+    "type": "system",
+    "actor_ids": [],
+    "actors_total": 0,
+    "post_id": null,
+    "comment_id": null,
+    "target_preview": "Добро пожаловать в «Ответы Mail»",
+    "content_preview": "Читайте ленты, голосуйте и участвуйте в обсуждениях прямо в Telegram.",
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": false,
+    "can_reply": false,
+    "created_at": "2026-10-08T12:00:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 9,
+    "user_id": 2,
+    "type": "post_comment",
+    "actor_ids": [
+      1
+    ],
+    "actors_total": 1,
+    "post_id": 1,
+    "comment_id": 1,
+    "target_preview": "Что за ИИ, давай поговорим",
+    "content_preview": "Согласен: граница между «я придумал» и «я сделал» стирается. Инструмент умеет и то, и другое, а ценность смещается к умению ставить задачу.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T11:45:00Z",
+    "read_at": null
+  },
+  {
+    "id": 10,
+    "user_id": 3,
+    "type": "post_comment",
+    "actor_ids": [
+      1
+    ],
+    "actors_total": 1,
+    "post_id": 2,
+    "comment_id": 4,
+    "target_preview": "Тренды UI дизайна в 2026 году",
+    "content_preview": "Адаптивность важнее эффектов. Неоморфизм красиво смотрится в дизайн-системах, но на слабых экранах теряет контраст.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T11:20:00Z",
+    "read_at": null
+  },
+  {
+    "id": 11,
+    "user_id": 4,
+    "type": "post_comment",
+    "actor_ids": [
+      9
+    ],
+    "actors_total": 1,
+    "post_id": 3,
+    "comment_id": 7,
+    "target_preview": "Zero waste: с чего начать?",
+    "content_preview": "Начните с многоразовой сумки и бутылки: это самые заметные источники бытового мусора.",
+    "thumbnail_url": null,
+    "is_read": true,
+    "is_clickable": true,
+    "can_reply": false,
+    "created_at": "2026-10-10T10:20:00Z",
+    "read_at": "2026-10-10T11:30:00Z"
+  },
+  {
+    "id": 12,
+    "user_id": 6,
+    "type": "post_comment",
+    "actor_ids": [
+      3
+    ],
+    "actors_total": 1,
+    "post_id": 5,
+    "comment_id": 13,
+    "target_preview": "Портреты при естественном свете",
+    "content_preview": "Белый картон работает отлично. Пробовала фольгу вместо него, но свет получается слишком жёстким.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T10:58:00Z",
+    "read_at": null
+  },
+  {
+    "id": 13,
+    "user_id": 7,
+    "type": "post_comment",
+    "actor_ids": [
+      9
+    ],
+    "actors_total": 1,
+    "post_id": 6,
+    "comment_id": 17,
+    "target_preview": "5 книг, которые изменили моё мышление",
+    "content_preview": "Я бы добавил в такой список «Думай медленно… решай быстро» Даниэля Канемана.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T07:00:00Z",
+    "read_at": null
+  },
+  {
+    "id": 14,
+    "user_id": 10,
+    "type": "comment_reply",
+    "actor_ids": [
+      3
+    ],
+    "actors_total": 1,
+    "post_id": 7,
+    "comment_id": 21,
+    "target_preview": "Нет. Любопытство для меня не повод, хотя в некоторых странах это обычное блюдо.",
+    "content_preview": "Всё упирается в культурный контекст. Для меня это вопрос привычек, а не только этики.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T09:00:00Z",
+    "read_at": null
+  },
+  {
+    "id": 15,
+    "user_id": 10,
+    "type": "post_comment",
+    "actor_ids": [
+      1
+    ],
+    "actors_total": 1,
+    "post_id": 12,
+    "comment_id": 28,
+    "target_preview": "Как начать изучать Go с нуля?",
+    "content_preview": "Начните с официального Tour of Go, а затем напишите небольшую утилиту для командной строки.",
+    "thumbnail_url": null,
+    "is_read": false,
+    "is_clickable": true,
+    "can_reply": true,
+    "created_at": "2026-10-10T09:30:00Z",
+    "read_at": null
+  }
+]

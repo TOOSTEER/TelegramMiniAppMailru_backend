@@ -1,0 +1,198 @@
+[
+  {
+    "id": 1,
+    "name": "истории",
+    "slug": "istorii",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 2,
+    "name": "экология",
+    "slug": "ekologiya",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 3,
+    "name": "фото",
+    "slug": "foto",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 4,
+    "name": "бизнес",
+    "slug": "biznes",
+    "kind": "rubric",
+    "posts_count": 2
+  },
+  {
+    "id": 5,
+    "name": "книги",
+    "slug": "knigi",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 6,
+    "name": "дизайн",
+    "slug": "dizayn",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 7,
+    "name": "общество",
+    "slug": "obshchestvo",
+    "kind": "rubric",
+    "posts_count": 2
+  },
+  {
+    "id": 8,
+    "name": "здоровье",
+    "slug": "zdorove",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 9,
+    "name": "путешествия",
+    "slug": "puteshestviya",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 10,
+    "name": "программирование",
+    "slug": "programmirovanie",
+    "kind": "rubric",
+    "posts_count": 1
+  },
+  {
+    "id": 11,
+    "name": "мем",
+    "slug": "mem",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 12,
+    "name": "друг",
+    "slug": "drug",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 13,
+    "name": "скейт",
+    "slug": "skeyt",
+    "kind": "hashtag",
+    "posts_count": 3
+  },
+  {
+    "id": 14,
+    "name": "zerowaste",
+    "slug": "zerowaste",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 15,
+    "name": "осознанность",
+    "slug": "osoznannost",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 16,
+    "name": "жизнь",
+    "slug": "zhizn",
+    "kind": "hashtag",
+    "posts_count": 2
+  },
+  {
+    "id": 17,
+    "name": "портрет",
+    "slug": "portret",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 18,
+    "name": "свет",
+    "slug": "svet",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 19,
+    "name": "советы",
+    "slug": "sovety",
+    "kind": "hashtag",
+    "posts_count": 2
+  },
+  {
+    "id": 20,
+    "name": "стартапы",
+    "slug": "startapy",
+    "kind": "hashtag",
+    "posts_count": 2
+  },
+  {
+    "id": 21,
+    "name": "ошибки",
+    "slug": "oshibki",
+    "kind": "hashtag",
+    "posts_count": 2
+  },
+  {
+    "id": 22,
+    "name": "тренды",
+    "slug": "trendy",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 23,
+    "name": "ui",
+    "slug": "ui",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 24,
+    "name": "литература",
+    "slug": "literatura",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 25,
+    "name": "саморазвитие",
+    "slug": "samorazvitie",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 26,
+    "name": "карелия",
+    "slug": "kareliya",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 27,
+    "name": "go",
+    "slug": "go",
+    "kind": "hashtag",
+    "posts_count": 1
+  },
+  {
+    "id": 28,
+    "name": "карьера",
+    "slug": "karera",
+    "kind": "hashtag",
+    "posts_count": 1
+  }
+]

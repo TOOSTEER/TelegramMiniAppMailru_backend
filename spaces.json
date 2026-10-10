@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Информационные технологии",
+    "slug": "it",
+    "description": "Программирование, нейросети, гаджеты и всё, что связано с IT.",
+    "icon_url": null,
+    "members_count": 48210,
+    "posts_count": 2,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 2,
+    "name": "Экология",
+    "slug": "ecology",
+    "description": "Осознанное потребление, переработка отходов и забота о планете.",
+    "icon_url": null,
+    "members_count": 9320,
+    "posts_count": 1,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 3,
+    "name": "Фотография",
+    "slug": "photo",
+    "description": "Техника съёмки, обработка, оборудование и творческие идеи.",
+    "icon_url": null,
+    "members_count": 15470,
+    "posts_count": 1,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 4,
+    "name": "Бизнес и стартапы",
+    "slug": "business",
+    "description": "Запуск проектов, управление командой и привлечение инвестиций.",
+    "icon_url": null,
+    "members_count": 21860,
+    "posts_count": 2,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 5,
+    "name": "Книги и литература",
+    "slug": "books",
+    "description": "Обсуждаем прочитанное, делимся подборками и открытиями.",
+    "icon_url": null,
+    "members_count": 12740,
+    "posts_count": 1,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 6,
+    "name": "Дизайн и UX",
+    "slug": "design",
+    "description": "Интерфейсы, исследования пользователей и визуальные тренды.",
+    "icon_url": null,
+    "members_count": 17390,
+    "posts_count": 1,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 7,
+    "name": "Общество и жизнь",
+    "slug": "society",
+    "description": "Вопросы о привычках, отношениях и повседневной жизни.",
+    "icon_url": null,
+    "members_count": 63540,
+    "posts_count": 2,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 8,
+    "name": "Здоровье",
+    "slug": "health",
+    "description": "Самочувствие, привычки и образ жизни.",
+    "icon_url": null,
+    "members_count": 38120,
+    "posts_count": 1,
+    "created_at": "2018-01-15T09:00:00Z"
+  },
+  {
+    "id": 9,
+    "name": "Путешествия",
+    "slug": "travel",
+    "description": "Маршруты, советы и впечатления из поездок.",
+    "icon_url": null,
+    "members_count": 27650,
+    "posts_count": 1,
+    "created_at": "2018-01-15T09:00:00Z"
+  }
+]

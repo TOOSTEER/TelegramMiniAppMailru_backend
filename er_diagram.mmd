@@ -1,0 +1,135 @@
+erDiagram
+    USER ||--o{ POST : "author_id"
+    SPACE ||--o{ POST : "space_id"
+    POST |o--o{ POST : "parent_post_id"
+    POST ||--o{ POST_TAG : "post_id"
+    TAG ||--o{ POST_TAG : "tag_id"
+    POST ||--o{ COMMENT : "post_id"
+    USER ||--o{ COMMENT : "author_id"
+    COMMENT |o--o{ COMMENT : "parent_comment_id"
+    USER ||--o{ VOTE : "user_id"
+    POST |o--o{ VOTE : "target_type = post"
+    COMMENT |o--o{ VOTE : "target_type = comment"
+    USER ||--o{ NOTIFICATION : "user_id"
+    POST |o--o{ NOTIFICATION : "post_id"
+    COMMENT |o--o{ NOTIFICATION : "comment_id"
+    NOTIFICATION ||--o{ NOTIFICATION_ACTOR : "notification_id"
+    USER ||--o{ NOTIFICATION_ACTOR : "actor_id"
+
+    USER {
+        bigint id PK
+        varchar username UK
+        varchar avatar_url
+        text bio
+        varchar rank
+        smallint rank_level
+        int reputation
+        int posts_count
+        int answers_count
+        int comments_count
+        bigint telegram_user_id UK
+        timestamp registered_at
+    }
+
+    SPACE {
+        bigint id PK
+        varchar name
+        varchar slug UK
+        text description
+        varchar icon_url
+        int members_count
+        int posts_count
+        timestamp created_at
+    }
+
+    TAG {
+        bigint id PK
+        varchar name UK
+        varchar slug UK
+        varchar kind
+        int posts_count
+    }
+
+    POST {
+        bigint id PK
+        varchar type
+        varchar type_label
+        bigint author_id FK
+        bigint space_id FK
+        bigint parent_post_id FK
+        varchar title
+        text body
+        text excerpt
+        varchar cover_image_url
+        boolean has_poll
+        int upvotes_count
+        int downvotes_count
+        int rating
+        int comments_count
+        int views_count
+        int shares_count
+        numeric popularity_score
+        int discussion_score
+        boolean is_edited
+        timestamp created_at
+        timestamp updated_at
+        timestamp last_activity_at
+    }
+
+    POST_TAG {
+        bigint post_id PK, FK
+        bigint tag_id PK, FK
+        smallint position
+    }
+
+    COMMENT {
+        bigint id PK
+        bigint post_id FK
+        bigint author_id FK
+        bigint parent_comment_id FK
+        bigint root_comment_id FK
+        bigint reply_to_user_id FK
+        smallint depth
+        text text
+        int upvotes_count
+        int downvotes_count
+        int rating
+        int replies_count
+        int descendants_count
+        boolean is_edited
+        boolean is_deleted
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    VOTE {
+        bigint id PK
+        bigint user_id FK
+        varchar target_type
+        bigint target_id FK
+        smallint value
+        timestamp created_at
+    }
+
+    NOTIFICATION {
+        bigint id PK
+        bigint user_id FK
+        varchar type
+        bigint post_id FK
+        bigint comment_id FK
+        int actors_total
+        text target_preview
+        text content_preview
+        varchar thumbnail_url
+        boolean is_read
+        boolean is_clickable
+        boolean can_reply
+        timestamp created_at
+        timestamp read_at
+    }
+
+    NOTIFICATION_ACTOR {
+        bigint notification_id PK, FK
+        bigint actor_id PK, FK
+        smallint position
+    }
