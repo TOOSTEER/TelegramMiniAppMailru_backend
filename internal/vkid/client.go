@@ -71,6 +71,36 @@ func (c *Client) AuthURL(state, verifier string) string {
 }
 
 func (c *Client) Exchange(ctx context.Context, code, verifier, deviceID, state string) (Tokens, error) {
+	tokens, err := c.requestTokens(ctx, url.Values{
+		"grant_type":    {"authorization_code"},
+		"code":          {code},
+		"code_verifier": {verifier},
+		"client_id":     {c.cfg.ClientID},
+		"device_id":     {deviceID},
+		"redirect_uri":  {c.cfg.RedirectURL},
+		"state":         {state},
+	})
+	if err != nil {
+		return Tokens{}, fmt.Errorf("обмен кода на токены: %w", err)
+	}
+	return tokens, nil
+}
+
+func (c *Client) Refresh(ctx context.Context, refreshToken, deviceID string) (Tokens, error) {
+	tokens, err := c.requestTokens(ctx, url.Values{
+		"grant_type":    {"refresh_token"},
+		"refresh_token": {refreshToken},
+		"client_id":     {c.cfg.ClientID},
+		"device_id":     {deviceID},
+		"state":         {NewState()},
+	})
+	if err != nil {
+		return Tokens{}, fmt.Errorf("обновление токенов: %w", err)
+	}
+	return tokens, nil
+}
+
+func (c *Client) requestTokens(ctx context.Context, form url.Values) (Tokens, error) {
 	var resp struct {
 		AccessToken  string  `json:"access_token"`
 		RefreshToken string  `json:"refresh_token"`
@@ -81,24 +111,14 @@ func (c *Client) Exchange(ctx context.Context, code, verifier, deviceID, state s
 		Scope        string  `json:"scope"`
 	}
 
-	err := c.post(ctx, c.cfg.TokenURL, url.Values{
-		"grant_type":    {"authorization_code"},
-		"code":          {code},
-		"code_verifier": {verifier},
-		"client_id":     {c.cfg.ClientID},
-		"device_id":     {deviceID},
-		"redirect_uri":  {c.cfg.RedirectURL},
-		"state":         {state},
-	}, &resp)
-	if err != nil {
-		return Tokens{}, fmt.Errorf("обмен кода на токены: %w", err)
+	if err := c.post(ctx, c.cfg.TokenURL, form, &resp); err != nil {
+		return Tokens{}, err
 	}
-
-	if resp.State != state {
+	if resp.State != form.Get("state") {
 		return Tokens{}, ErrStateMismatch
 	}
 	if resp.AccessToken == "" {
-		return Tokens{}, errors.New("обмен кода на токены: в ответе VK ID нет access_token")
+		return Tokens{}, errors.New("в ответе VK ID нет access_token")
 	}
 
 	return Tokens{

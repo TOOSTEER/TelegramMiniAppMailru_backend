@@ -13,11 +13,29 @@ import (
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkidsession"
 )
 
 type fakePinger struct{ err error }
 
 func (p fakePinger) Ping(context.Context) error { return p.err }
+
+type fakeSessions struct {
+	token string
+	err   error
+	calls int
+}
+
+func (f *fakeSessions) AccessToken(context.Context, int64) (string, error) {
+	f.calls++
+	if f.err != nil {
+		return "", f.err
+	}
+	if f.token == "" {
+		return "", vkidsession.ErrNotLinked
+	}
+	return f.token, nil
+}
 
 type fakeUsers struct {
 	mu    sync.Mutex
@@ -134,6 +152,9 @@ func newTestRouter(t *testing.T, deps Deps) *gin.Engine {
 	}
 	if deps.Users == nil {
 		deps.Users = newFakeUsers()
+	}
+	if deps.Sessions == nil {
+		deps.Sessions = &fakeSessions{}
 	}
 
 	r, err := NewRouter(config.Config{

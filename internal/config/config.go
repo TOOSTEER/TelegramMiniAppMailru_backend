@@ -45,16 +45,17 @@ type Telegram struct {
 }
 
 type VKID struct {
-	ClientID    string
-	AuthURL     string
-	TokenURL    string
-	UserInfoURL string
-	LogoutURL   string
-	RedirectURL string
-	Scopes      string
-	Provider    string
-	StateTTL    time.Duration
-	HTTPTimeout time.Duration
+	ClientID      string
+	AuthURL       string
+	TokenURL      string
+	UserInfoURL   string
+	LogoutURL     string
+	RedirectURL   string
+	Scopes        string
+	Provider      string
+	StateTTL      time.Duration
+	HTTPTimeout   time.Duration
+	RefreshBefore time.Duration
 }
 
 func Load() (Config, error) {
@@ -141,16 +142,17 @@ func Load() (Config, error) {
 			InitDataMaxAge: duration("TG_INITDATA_MAX_AGE", 24*time.Hour),
 		},
 		VKID: VKID{
-			ClientID:    required("VKID_CLIENT_ID"),
-			AuthURL:     absURL("VKID_AUTH_URL", "https://id.vk.ru/authorize"),
-			TokenURL:    absURL("VKID_TOKEN_URL", "https://id.vk.ru/oauth2/auth"),
-			UserInfoURL: absURL("VKID_USERINFO_URL", "https://id.vk.ru/oauth2/user_info"),
-			LogoutURL:   absURL("VKID_LOGOUT_URL", "https://id.vk.ru/oauth2/logout"),
-			RedirectURL: absURL("VKID_REDIRECT_URL", "http://localhost/oauth/callback"),
-			Scopes:      getenv("VKID_SCOPES", "vkid.personal_info email"),
-			Provider:    oneOf("VKID_PROVIDER", "mail_ru", "mail_ru", "ok_ru", "vkid"),
-			StateTTL:    duration("OAUTH_STATE_TTL", 10*time.Minute),
-			HTTPTimeout: duration("VKID_HTTP_TIMEOUT", 10*time.Second),
+			ClientID:      required("VKID_CLIENT_ID"),
+			AuthURL:       absURL("VKID_AUTH_URL", "https://id.vk.ru/authorize"),
+			TokenURL:      absURL("VKID_TOKEN_URL", "https://id.vk.ru/oauth2/auth"),
+			UserInfoURL:   absURL("VKID_USERINFO_URL", "https://id.vk.ru/oauth2/user_info"),
+			LogoutURL:     absURL("VKID_LOGOUT_URL", "https://id.vk.ru/oauth2/logout"),
+			RedirectURL:   absURL("VKID_REDIRECT_URL", "http://localhost/oauth/callback"),
+			Scopes:        getenv("VKID_SCOPES", "vkid.personal_info email"),
+			Provider:      oneOf("VKID_PROVIDER", "mail_ru", "mail_ru", "ok_ru", "vkid"),
+			StateTTL:      duration("OAUTH_STATE_TTL", 10*time.Minute),
+			HTTPTimeout:   duration("VKID_HTTP_TIMEOUT", 10*time.Second),
+			RefreshBefore: duration("VKID_REFRESH_BEFORE", time.Minute),
 		},
 	}
 

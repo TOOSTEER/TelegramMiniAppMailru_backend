@@ -38,6 +38,15 @@ type User struct {
 	LinkedAt   time.Time
 }
 
+type TokenUpdate struct {
+	AccessToken  string
+	RefreshToken string
+	Scope        string
+	ExpiresIn    time.Duration
+}
+
+type RefreshFunc func(ctx context.Context, refreshToken, deviceID string) (TokenUpdate, error)
+
 type Users struct {
 	pool *pgxpool.Pool
 }
@@ -126,6 +135,64 @@ func (s *Users) UnlinkVKID(ctx context.Context, telegramID int64) (accessToken s
 		return "", fmt.Errorf("фиксация транзакции: %w", err)
 	}
 	return accessToken, nil
+}
+
+func (s *Users) ValidAccessToken(ctx context.Context, telegramID int64, minTTL time.Duration, refresh RefreshFunc) (string, error) {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return "", fmt.Errorf("начало транзакции: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	var (
+		userID       int64
+		accessToken  string
+		refreshToken string
+		deviceID     string
+		fresh        bool
+	)
+	err = tx.QueryRow(ctx, `
+		SELECT s.user_id, s.access_token, s.refresh_token, s.device_id,
+		       s.expires_at > now() + make_interval(secs => $2)
+		FROM vkid_sessions s
+		JOIN users u ON u.id = s.user_id
+		WHERE u.telegram_id = $1
+		FOR UPDATE OF s`,
+		telegramID, minTTL.Seconds(),
+	).Scan(&userID, &accessToken, &refreshToken, &deviceID, &fresh)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", ErrUserNotFound
+	}
+	if err != nil {
+		return "", fmt.Errorf("чтение сессии VK ID: %w", err)
+	}
+	if fresh {
+		return accessToken, nil
+	}
+
+	upd, err := refresh(ctx, refreshToken, deviceID)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = tx.Exec(ctx, `
+		UPDATE vkid_sessions
+		SET access_token  = $2,
+		    refresh_token = COALESCE(NULLIF($3, ''), refresh_token),
+		    scope         = COALESCE(NULLIF($4, ''), scope),
+		    expires_at    = now() + make_interval(secs => $5),
+		    updated_at    = now()
+		WHERE user_id = $1`,
+		userID, upd.AccessToken, upd.RefreshToken, upd.Scope, upd.ExpiresIn.Seconds(),
+	)
+	if err != nil {
+		return "", fmt.Errorf("сохранение новых токенов: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return "", fmt.Errorf("фиксация транзакции: %w", err)
+	}
+	return upd.AccessToken, nil
 }
 
 func (s *Users) FindByTelegramID(ctx context.Context, telegramID int64) (User, error) {

@@ -12,6 +12,7 @@ import (
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/authstate"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkidsession"
 )
 
 const (
@@ -40,7 +41,15 @@ func (h *handler) vkidLogout(c *gin.Context) {
 	ctx := c.Request.Context()
 	telegramID := initData(c).User.ID
 
+	freshToken, err := h.sessions.AccessToken(ctx, telegramID)
+	if err != nil && !errors.Is(err, vkidsession.ErrNotLinked) && !errors.Is(err, vkidsession.ErrRelinkRequired) {
+		h.log.Warn("не удалось обновить токен перед отвязкой", zap.Int64("telegram_id", telegramID), zap.Error(err))
+	}
+
 	accessToken, err := h.users.UnlinkVKID(ctx, telegramID)
+	if freshToken != "" {
+		accessToken = freshToken
+	}
 	if errors.Is(err, storage.ErrUserNotFound) {
 		c.Status(http.StatusNoContent)
 		return

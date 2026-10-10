@@ -21,9 +21,11 @@ func postWithAuth(t *testing.T, h http.Handler, target string) *httptest.Respons
 func TestVKIDLogout(t *testing.T) {
 	tests := map[string]struct {
 		linked     bool
+		freshToken string
 		logoutErr  error
 		wantLogout []string
 	}{
+		"привязан, токен обновлён перед отвязкой": {linked: true, freshToken: "fresh-at", wantLogout: []string{"fresh-at"}},
 		"привязан": {linked: true, wantLogout: []string{"at-42"}},
 		"привязан, VK ID ответил ошибкой": {linked: true, logoutErr: errors.New("invalid_token"), wantLogout: []string{"at-42"}},
 		"не привязан":                     {linked: false, wantLogout: nil},
@@ -38,7 +40,7 @@ func TestVKIDLogout(t *testing.T) {
 				l.AccessToken = "at-42"
 				users.links[testTelegramID] = l
 			}
-			r := newTestRouter(t, Deps{Users: users, VKID: vk})
+			r := newTestRouter(t, Deps{Users: users, VKID: vk, Sessions: &fakeSessions{token: tt.freshToken}})
 
 			w := postWithAuth(t, r, "/api/vkid/logout")
 

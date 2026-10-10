@@ -20,6 +20,7 @@ import (
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/logger"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkidsession"
 )
 
 func main() {
@@ -64,12 +65,16 @@ func run(cfg config.Config, log *zap.Logger) error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	vk := vkid.New(cfg.VKID)
+	users := storage.NewUsers(pool)
+
 	router, err := httpapi.NewRouter(cfg, httpapi.Deps{
-		Log:    log,
-		DB:     pool,
-		VKID:   vkid.New(cfg.VKID),
-		States: storage.NewOAuthStates(pool, cfg.VKID.StateTTL),
-		Users:  storage.NewUsers(pool),
+		Log:      log,
+		DB:       pool,
+		VKID:     vk,
+		States:   storage.NewOAuthStates(pool, cfg.VKID.StateTTL),
+		Users:    users,
+		Sessions: vkidsession.New(users, vk, cfg.VKID.RefreshBefore, log.Named("vkid")),
 	})
 	if err != nil {
 		return err

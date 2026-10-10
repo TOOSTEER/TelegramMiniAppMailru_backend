@@ -37,12 +37,17 @@ type Users interface {
 	FindByTelegramID(ctx context.Context, telegramID int64) (storage.User, error)
 }
 
+type Sessions interface {
+	AccessToken(ctx context.Context, telegramID int64) (string, error)
+}
+
 type Deps struct {
-	Log    *zap.Logger
-	DB     Pinger
-	VKID   VKID
-	States StateStore
-	Users  Users
+	Log      *zap.Logger
+	DB       Pinger
+	VKID     VKID
+	States   StateStore
+	Users    Users
+	Sessions Sessions
 }
 
 type handler struct {
@@ -51,6 +56,7 @@ type handler struct {
 	vkid          VKID
 	states        StateStore
 	users         Users
+	sessions      Sessions
 	healthTimeout time.Duration
 	miniAppURL    *url.URL
 }
@@ -67,6 +73,7 @@ func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
 		vkid:          deps.VKID,
 		states:        deps.States,
 		users:         deps.Users,
+		sessions:      deps.Sessions,
 		healthTimeout: cfg.HTTP.HealthTimeout,
 		miniAppURL:    miniAppURL,
 	}
@@ -87,6 +94,7 @@ func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
 	api.GET("/me", h.me)
 	api.POST("/vkid/login", h.vkidLogin)
 	api.POST("/vkid/logout", h.vkidLogout)
+	api.GET("/vkid/profile", h.vkidProfile)
 
 	return r, nil
 }

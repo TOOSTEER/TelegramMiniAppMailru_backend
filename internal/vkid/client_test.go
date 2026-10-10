@@ -3,6 +3,7 @@ package vkid
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -162,5 +163,59 @@ func TestLogoutErrors(t *testing.T) {
 				t.Error("Logout() error = nil, want error")
 			}
 		})
+	}
+}
+
+func TestRefresh(t *testing.T) {
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		want := map[string]string{
+			"grant_type":    "refresh_token",
+			"refresh_token": "old-rt",
+			"client_id":     "12345",
+			"device_id":     "dev-1",
+		}
+		for k, v := range want {
+			if got := r.PostFormValue(k); got != v {
+				t.Errorf("%s = %q, want %q", k, got, v)
+			}
+		}
+		state := r.PostFormValue("state")
+		if len(state) < 32 {
+			t.Errorf("state = %q, want не короче 32 символов", state)
+		}
+		if r.PostFormValue("code_verifier") != "" || r.PostFormValue("redirect_uri") != "" {
+			t.Error("в запросе обновления не должно быть code_verifier и redirect_uri")
+		}
+
+		_, _ = fmt.Fprintf(w, `{"access_token":"new-at","refresh_token":"new-rt","expires_in":3600,"user_id":7,"state":%q,"scope":"email"}`, state)
+	})
+
+	tok, err := c.Refresh(context.Background(), "old-rt", "dev-1")
+	if err != nil {
+		t.Fatalf("Refresh() error = %v", err)
+	}
+	if tok.AccessToken != "new-at" || tok.RefreshToken != "new-rt" || tok.ExpiresIn != time.Hour {
+		t.Errorf("Refresh() = %+v", tok)
+	}
+}
+
+func TestRefreshInvalidGrant(t *testing.T) {
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"error":"invalid_grant","error_description":"refresh token expired"}`))
+	})
+
+	var apiErr *APIError
+	if _, err := c.Refresh(context.Background(), "rt", "dev"); !errors.As(err, &apiErr) || apiErr.Code != "invalid_grant" {
+		t.Errorf("Refresh() error = %v, want APIError invalid_grant", err)
+	}
+}
+
+func TestRefreshStateMismatch(t *testing.T) {
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"access_token":"at","state":"other"}`))
+	})
+
+	if _, err := c.Refresh(context.Background(), "rt", "dev"); !errors.Is(err, ErrStateMismatch) {
+		t.Errorf("Refresh() error = %v, want ErrStateMismatch", err)
 	}
 }
