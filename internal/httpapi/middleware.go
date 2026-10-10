@@ -30,7 +30,7 @@ func requestLogger(log *zap.Logger) gin.HandlerFunc {
 		}
 
 		switch {
-		case status >= http.StatusInternalServerError || len(c.Errors) > 0:
+		case status >= http.StatusInternalServerError || (len(c.Errors) > 0 && status < http.StatusBadRequest):
 			log.Error("HTTP-запрос", fields...)
 		case status >= http.StatusBadRequest:
 			log.Warn("HTTP-запрос", fields...)

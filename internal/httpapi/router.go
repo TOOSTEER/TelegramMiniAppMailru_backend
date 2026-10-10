@@ -72,5 +72,8 @@ func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
 	oauth.GET("/login", h.oauthLogin)
 	oauth.GET("/callback", h.oauthCallback)
 
+	api := r.Group("/api", telegramAuth(cfg.Telegram.Token, cfg.Telegram.InitDataMaxAge))
+	api.GET("/me", h.me)
+
 	return r, nil
 }

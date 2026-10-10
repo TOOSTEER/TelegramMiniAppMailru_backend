@@ -39,8 +39,9 @@ type DB struct {
 }
 
 type Telegram struct {
-	Token      string
-	MiniAppURL string
+	Token          string
+	MiniAppURL     string
+	InitDataMaxAge time.Duration
 }
 
 type VKID struct {
@@ -134,8 +135,9 @@ func Load() (Config, error) {
 			ConnectTimeout: duration("DB_CONNECT_TIMEOUT", 5*time.Second),
 		},
 		Telegram: Telegram{
-			Token:      required("TG_BOT_TOKEN"),
-			MiniAppURL: absURL("TG_MINIAPP_URL", ""),
+			Token:          required("TG_BOT_TOKEN"),
+			MiniAppURL:     absURL("TG_MINIAPP_URL", ""),
+			InitDataMaxAge: duration("TG_INITDATA_MAX_AGE", 24*time.Hour),
 		},
 		VKID: VKID{
 			ClientID:    required("VKID_CLIENT_ID"),

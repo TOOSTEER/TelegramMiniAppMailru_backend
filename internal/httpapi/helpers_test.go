@@ -41,7 +41,10 @@ func newFakeVKID() *fakeVKID {
 	}
 }
 
-const testMiniAppURL = "https://t.me/test_bot/app"
+const (
+	testMiniAppURL = "https://t.me/test_bot/app"
+	testBotToken   = "123456:TEST-TOKEN"
+)
 
 var testVKIDConfig = config.VKID{
 	ClientID:    "12345",
@@ -70,7 +73,7 @@ func newTestRouter(t *testing.T, deps Deps) *gin.Engine {
 
 	r, err := NewRouter(config.Config{
 		HTTP:     config.HTTP{HealthTimeout: time.Second},
-		Telegram: config.Telegram{MiniAppURL: testMiniAppURL},
+		Telegram: config.Telegram{Token: testBotToken, MiniAppURL: testMiniAppURL, InitDataMaxAge: time.Hour},
 	}, deps)
 	if err != nil {
 		t.Fatal(err)
