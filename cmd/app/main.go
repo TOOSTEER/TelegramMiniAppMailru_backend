@@ -15,7 +15,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/authstate"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/httpapi"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/logger"
@@ -69,7 +68,7 @@ func run(cfg config.Config, log *zap.Logger) error {
 		Log:    log,
 		DB:     pool,
 		VKID:   vkid.New(cfg.VKID),
-		States: authstate.NewMemory(cfg.VKID.StateTTL),
+		States: storage.NewOAuthStates(pool, cfg.VKID.StateTTL),
 	})
 	if err != nil {
 		return err
