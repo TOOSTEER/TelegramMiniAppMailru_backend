@@ -1,26 +1,13 @@
 package httpapi
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-
-	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 )
 
-type fakePinger struct{ err error }
-
-func (p fakePinger) Ping(context.Context) error { return p.err }
-
 func TestHealth(t *testing.T) {
-	gin.SetMode(gin.TestMode)
-
 	tests := []struct {
 		name     string
 		pingErr  error
@@ -33,10 +20,7 @@ func TestHealth(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r, err := NewRouter(config.HTTP{HealthTimeout: time.Second}, zap.NewNop(), fakePinger{err: tt.pingErr})
-			if err != nil {
-				t.Fatal(err)
-			}
+			r := newTestRouter(t, Deps{DB: fakePinger{err: tt.pingErr}})
 
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "/health", nil))

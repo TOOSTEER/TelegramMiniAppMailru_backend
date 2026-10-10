@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/url"
 	"os"
+	"slices"
 	"strings"
 	"time"
 )
@@ -20,6 +22,7 @@ type Config struct {
 	HTTP     HTTP
 	DB       DB
 	Telegram Telegram
+	VKID     VKID
 }
 
 type HTTP struct {
@@ -37,6 +40,15 @@ type DB struct {
 
 type Telegram struct {
 	Token string
+}
+
+type VKID struct {
+	ClientID    string
+	AuthURL     string
+	RedirectURL string
+	Scopes      string
+	Provider    string
+	StateTTL    time.Duration
 }
 
 func Load() (Config, error) {
@@ -83,6 +95,24 @@ func Load() (Config, error) {
 		return list
 	}
 
+	absURL := func(key, fallback string) string {
+		v := getenv(key, fallback)
+		u, err := url.Parse(v)
+		if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
+			errs = append(errs, fmt.Errorf("%s=%q: ожидается абсолютный http(s) URL", key, v))
+		}
+		return v
+	}
+
+	oneOf := func(key, fallback string, allowed ...string) string {
+		v := getenv(key, fallback)
+		if !slices.Contains(allowed, v) {
+			errs = append(errs, fmt.Errorf("%s=%q: допустимы %s", key, v, strings.Join(allowed, ", ")))
+			return fallback
+		}
+		return v
+	}
+
 	cfg := Config{
 		Env: getenv("APP_ENV", EnvDevelopment),
 		HTTP: HTTP{
@@ -98,6 +128,14 @@ func Load() (Config, error) {
 		},
 		Telegram: Telegram{
 			Token: required("TG_BOT_TOKEN"),
+		},
+		VKID: VKID{
+			ClientID:    required("VKID_CLIENT_ID"),
+			AuthURL:     absURL("VKID_AUTH_URL", "https://id.vk.ru/authorize"),
+			RedirectURL: absURL("VKID_REDIRECT_URL", "http://localhost/oauth/callback"),
+			Scopes:      getenv("VKID_SCOPES", "vkid.personal_info email"),
+			Provider:    oneOf("VKID_PROVIDER", "mail_ru", "mail_ru", "ok_ru", "vkid"),
+			StateTTL:    duration("OAUTH_STATE_TTL", 10*time.Minute),
 		},
 	}
 

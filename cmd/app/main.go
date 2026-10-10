@@ -15,10 +15,12 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/authstate"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/httpapi"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/logger"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/vkid"
 )
 
 func main() {
@@ -63,7 +65,12 @@ func run(cfg config.Config, log *zap.Logger) error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router, err := httpapi.NewRouter(cfg.HTTP, log, pool)
+	router, err := httpapi.NewRouter(cfg.HTTP, httpapi.Deps{
+		Log:    log,
+		DB:     pool,
+		VKID:   vkid.New(cfg.VKID),
+		States: authstate.NewMemory(cfg.VKID.StateTTL),
+	})
 	if err != nil {
 		return err
 	}

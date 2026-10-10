@@ -1,0 +1,54 @@
+package authstate
+
+import (
+	"context"
+	"errors"
+	"sync"
+	"time"
+)
+
+var ErrNotFound = errors.New("state не найден или просрочен")
+
+type item struct {
+	verifier  string
+	expiresAt time.Time
+}
+
+type Memory struct {
+	ttl   time.Duration
+	now   func() time.Time
+	mu    sync.Mutex
+	items map[string]item
+}
+
+func NewMemory(ttl time.Duration) *Memory {
+	return &Memory{ttl: ttl, now: time.Now, items: make(map[string]item)}
+}
+
+func (m *Memory) Save(_ context.Context, state, verifier string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	now := m.now()
+	for k, it := range m.items {
+		if now.After(it.expiresAt) {
+			delete(m.items, k)
+		}
+	}
+
+	m.items[state] = item{verifier: verifier, expiresAt: now.Add(m.ttl)}
+	return nil
+}
+
+func (m *Memory) Pop(_ context.Context, state string) (string, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	it, ok := m.items[state]
+	delete(m.items, state)
+
+	if !ok || m.now().After(it.expiresAt) {
+		return "", ErrNotFound
+	}
+	return it.verifier, nil
+}
