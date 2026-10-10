@@ -20,6 +20,7 @@ func newTestClient(t *testing.T, handler http.HandlerFunc) *Client {
 		ClientID:    "12345",
 		TokenURL:    srv.URL + "/oauth2/auth",
 		UserInfoURL: srv.URL + "/oauth2/user_info",
+		LogoutURL:   srv.URL + "/oauth2/logout",
 		RedirectURL: "http://localhost/oauth/callback",
 		HTTPTimeout: time.Second,
 	})
@@ -132,5 +133,34 @@ func TestUserInfoInvalidToken(t *testing.T) {
 	var apiErr *APIError
 	if _, err := c.UserInfo(context.Background(), "bad"); !errors.As(err, &apiErr) || apiErr.Code != "invalid_token" {
 		t.Errorf("UserInfo() error = %v, want APIError invalid_token", err)
+	}
+}
+
+func TestLogout(t *testing.T) {
+	c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/oauth2/logout" || r.PostFormValue("access_token") != "at" || r.PostFormValue("client_id") != "12345" {
+			t.Errorf("запрос %s, form = %v", r.URL.Path, r.PostForm)
+		}
+		_, _ = w.Write([]byte(`{"response":1}`))
+	})
+
+	if err := c.Logout(context.Background(), "at"); err != nil {
+		t.Errorf("Logout() error = %v", err)
+	}
+}
+
+func TestLogoutErrors(t *testing.T) {
+	for name, body := range map[string]string{
+		"invalid_token": `{"error":"invalid_token","error_description":"token expired"}`,
+		"response=0":    `{"response":0}`,
+	} {
+		t.Run(name, func(t *testing.T) {
+			c := newTestClient(t, func(w http.ResponseWriter, r *http.Request) {
+				_, _ = w.Write([]byte(body))
+			})
+			if err := c.Logout(context.Background(), "at"); err == nil {
+				t.Error("Logout() error = nil, want error")
+			}
+		})
 	}
 }

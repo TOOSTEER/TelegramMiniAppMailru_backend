@@ -44,6 +44,20 @@ func (f *fakeUsers) LinkVKID(_ context.Context, l storage.VKIDLink) error {
 	return nil
 }
 
+func (f *fakeUsers) UnlinkVKID(_ context.Context, telegramID int64) (string, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.err != nil {
+		return "", f.err
+	}
+	l, ok := f.links[telegramID]
+	if !ok {
+		return "", storage.ErrUserNotFound
+	}
+	delete(f.links, telegramID)
+	return l.AccessToken, nil
+}
+
 func (f *fakeUsers) FindByTelegramID(_ context.Context, telegramID int64) (storage.User, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
@@ -63,6 +77,14 @@ type fakeVKID struct {
 	exchangeErr error
 	user        vkid.User
 	userInfoErr error
+
+	loggedOut []string
+	logoutErr error
+}
+
+func (f *fakeVKID) Logout(_ context.Context, accessToken string) error {
+	f.loggedOut = append(f.loggedOut, accessToken)
+	return f.logoutErr
 }
 
 func (f *fakeVKID) Exchange(context.Context, string, string, string, string) (vkid.Tokens, error) {

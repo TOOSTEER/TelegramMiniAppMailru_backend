@@ -49,6 +49,7 @@ type VKID struct {
 	AuthURL     string
 	TokenURL    string
 	UserInfoURL string
+	LogoutURL   string
 	RedirectURL string
 	Scopes      string
 	Provider    string
@@ -144,6 +145,7 @@ func Load() (Config, error) {
 			AuthURL:     absURL("VKID_AUTH_URL", "https://id.vk.ru/authorize"),
 			TokenURL:    absURL("VKID_TOKEN_URL", "https://id.vk.ru/oauth2/auth"),
 			UserInfoURL: absURL("VKID_USERINFO_URL", "https://id.vk.ru/oauth2/user_info"),
+			LogoutURL:   absURL("VKID_LOGOUT_URL", "https://id.vk.ru/oauth2/logout"),
 			RedirectURL: absURL("VKID_REDIRECT_URL", "http://localhost/oauth/callback"),
 			Scopes:      getenv("VKID_SCOPES", "vkid.personal_info email"),
 			Provider:    oneOf("VKID_PROVIDER", "mail_ru", "mail_ru", "ok_ru", "vkid"),

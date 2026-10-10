@@ -10,7 +10,7 @@ var optionalKeys = []string{
 	"APP_ENV", "LOG_LEVEL",
 	"HTTP_ADDR", "HTTP_READ_HEADER_TIMEOUT", "SHUTDOWN_TIMEOUT", "HEALTH_TIMEOUT", "HTTP_TRUSTED_PROXIES",
 	"DB_CONNECT_TIMEOUT", "TG_INITDATA_MAX_AGE",
-	"VKID_AUTH_URL", "VKID_TOKEN_URL", "VKID_USERINFO_URL", "VKID_HTTP_TIMEOUT", "VKID_REDIRECT_URL", "VKID_SCOPES", "VKID_PROVIDER", "OAUTH_STATE_TTL",
+	"VKID_AUTH_URL", "VKID_TOKEN_URL", "VKID_USERINFO_URL", "VKID_LOGOUT_URL", "VKID_HTTP_TIMEOUT", "VKID_REDIRECT_URL", "VKID_SCOPES", "VKID_PROVIDER", "OAUTH_STATE_TTL",
 }
 
 func setEnv(t *testing.T, env map[string]string) {
@@ -54,6 +54,7 @@ func TestLoadDefaults(t *testing.T) {
 			AuthURL:     "https://id.vk.ru/authorize",
 			TokenURL:    "https://id.vk.ru/oauth2/auth",
 			UserInfoURL: "https://id.vk.ru/oauth2/user_info",
+			LogoutURL:   "https://id.vk.ru/oauth2/logout",
 			RedirectURL: "http://localhost/oauth/callback",
 			Scopes:      "vkid.personal_info email",
 			Provider:    "mail_ru",

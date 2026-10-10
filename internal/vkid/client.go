@@ -144,6 +144,24 @@ func (c *Client) UserInfo(ctx context.Context, accessToken string) (User, error)
 	}, nil
 }
 
+func (c *Client) Logout(ctx context.Context, accessToken string) error {
+	var resp struct {
+		Response int `json:"response"`
+	}
+
+	err := c.post(ctx, c.cfg.LogoutURL, url.Values{
+		"client_id":    {c.cfg.ClientID},
+		"access_token": {accessToken},
+	}, &resp)
+	if err != nil {
+		return fmt.Errorf("завершение сессии: %w", err)
+	}
+	if resp.Response != 1 {
+		return fmt.Errorf("завершение сессии: VK ID ответил response=%d", resp.Response)
+	}
+	return nil
+}
+
 func (c *Client) post(ctx context.Context, endpoint string, form url.Values, out any) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, strings.NewReader(form.Encode()))
 	if err != nil {

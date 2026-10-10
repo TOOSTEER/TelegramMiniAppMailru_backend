@@ -124,3 +124,38 @@ func TestUsersVKIDAlreadyLinkedToAnotherTelegram(t *testing.T) {
 		t.Error("второй пользователь Telegram не должен был сохраниться")
 	}
 }
+
+func TestUsersUnlink(t *testing.T) {
+	pool := testPool(t)
+	ctx := context.Background()
+	users := NewUsers(pool)
+	tgID, vkID := uniqueIDs(t, pool)
+
+	if err := users.LinkVKID(ctx, link(tgID, vkID, "", "at-1")); err != nil {
+		t.Fatal(err)
+	}
+
+	accessToken, err := users.UnlinkVKID(ctx, tgID)
+	if err != nil || accessToken != "at-1" {
+		t.Fatalf("UnlinkVKID() = %q, %v; want at-1, nil", accessToken, err)
+	}
+	if _, err := users.FindByTelegramID(ctx, tgID); !errors.Is(err, ErrUserNotFound) {
+		t.Errorf("после отвязки FindByTelegramID(): err = %v, want ErrUserNotFound", err)
+	}
+
+	var sessions int
+	if err := pool.QueryRow(ctx, `SELECT count(*) FROM vkid_sessions WHERE access_token = 'at-1'`).Scan(&sessions); err != nil {
+		t.Fatal(err)
+	}
+	if sessions != 0 {
+		t.Error("сессия VK ID осталась после отвязки")
+	}
+
+	if _, err := users.UnlinkVKID(ctx, tgID); !errors.Is(err, ErrUserNotFound) {
+		t.Errorf("повторная отвязка: err = %v, want ErrUserNotFound", err)
+	}
+
+	if err := users.LinkVKID(ctx, link(tgID-1, vkID, "", "at-2")); err != nil {
+		t.Errorf("после отвязки аккаунт VK ID должен быть свободен для другого Telegram: %v", err)
+	}
+}

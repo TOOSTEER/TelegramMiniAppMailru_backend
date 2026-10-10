@@ -23,6 +23,7 @@ type VKID interface {
 	AuthURL(state, verifier string) string
 	Exchange(ctx context.Context, code, verifier, deviceID, state string) (vkid.Tokens, error)
 	UserInfo(ctx context.Context, accessToken string) (vkid.User, error)
+	Logout(ctx context.Context, accessToken string) error
 }
 
 type StateStore interface {
@@ -32,6 +33,7 @@ type StateStore interface {
 
 type Users interface {
 	LinkVKID(ctx context.Context, link storage.VKIDLink) error
+	UnlinkVKID(ctx context.Context, telegramID int64) (accessToken string, err error)
 	FindByTelegramID(ctx context.Context, telegramID int64) (storage.User, error)
 }
 
@@ -84,6 +86,7 @@ func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
 	api := r.Group("/api", telegramAuth(cfg.Telegram.Token, cfg.Telegram.InitDataMaxAge))
 	api.GET("/me", h.me)
 	api.POST("/vkid/login", h.vkidLogin)
+	api.POST("/vkid/logout", h.vkidLogout)
 
 	return r, nil
 }

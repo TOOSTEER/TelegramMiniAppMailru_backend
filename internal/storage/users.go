@@ -96,6 +96,38 @@ func (s *Users) LinkVKID(ctx context.Context, l VKIDLink) error {
 	return nil
 }
 
+func (s *Users) UnlinkVKID(ctx context.Context, telegramID int64) (accessToken string, err error) {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return "", fmt.Errorf("начало транзакции: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	err = tx.QueryRow(ctx, `
+		DELETE FROM vkid_sessions s
+		USING users u
+		WHERE s.user_id = u.id AND u.telegram_id = $1
+		RETURNING s.access_token`,
+		telegramID,
+	).Scan(&accessToken)
+	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
+		return "", fmt.Errorf("удаление сессии VK ID: %w", err)
+	}
+
+	tag, err := tx.Exec(ctx, `DELETE FROM users WHERE telegram_id = $1`, telegramID)
+	if err != nil {
+		return "", fmt.Errorf("удаление пользователя: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return "", ErrUserNotFound
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return "", fmt.Errorf("фиксация транзакции: %w", err)
+	}
+	return accessToken, nil
+}
+
 func (s *Users) FindByTelegramID(ctx context.Context, telegramID int64) (User, error) {
 	var u User
 	err := s.pool.QueryRow(ctx, `

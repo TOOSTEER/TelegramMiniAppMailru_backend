@@ -36,6 +36,34 @@ func (h *handler) vkidLogin(c *gin.Context) {
 	c.PureJSON(http.StatusOK, gin.H{"auth_url": h.vkid.AuthURL(state, verifier)})
 }
 
+func (h *handler) vkidLogout(c *gin.Context) {
+	ctx := c.Request.Context()
+	telegramID := initData(c).User.ID
+
+	accessToken, err := h.users.UnlinkVKID(ctx, telegramID)
+	if errors.Is(err, storage.ErrUserNotFound) {
+		c.Status(http.StatusNoContent)
+		return
+	}
+	if err != nil {
+		_ = c.Error(err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal"})
+		return
+	}
+
+	if accessToken != "" {
+		if err := h.vkid.Logout(ctx, accessToken); err != nil {
+			h.log.Warn("не удалось завершить сессию в VK ID, привязка удалена локально",
+				zap.Int64("telegram_id", telegramID),
+				zap.Error(err),
+			)
+		}
+	}
+
+	h.log.Info("аккаунт VK ID отвязан", zap.Int64("telegram_id", telegramID))
+	c.Status(http.StatusNoContent)
+}
+
 func (h *handler) oauthCallback(c *gin.Context) {
 	if vkErr := c.Query("error"); vkErr != "" {
 		h.log.Warn("VK ID вернул ошибку в callback",
