@@ -4,10 +4,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-func NewRouter() *gin.Engine {
-	r := gin.Default()
+func NewRouter(log *zap.Logger) *gin.Engine {
+	r := gin.New()
+	_ = r.SetTrustedProxies(nil)
+
+	r.Use(requestLogger(log), recovery(log))
 
 	r.GET("/health", health)
 

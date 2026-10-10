@@ -6,11 +6,12 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func TestHealth(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-	r := NewRouter()
+	r := NewRouter(zap.NewNop())
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)

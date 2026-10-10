@@ -1,15 +1,86 @@
 package main
 
 import (
-	"log"
+	"context"
+	"errors"
+	"fmt"
+	"io/fs"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
+	"github.com/joho/godotenv"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/httpapi"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/logger"
 )
 
 func main() {
-	r := httpapi.NewRouter()
-
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal(err)
+	if err := godotenv.Load(); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		fmt.Fprintln(os.Stderr, "чтение .env:", err)
+		os.Exit(1)
 	}
+
+	cfg, cfgErr := config.Load()
+
+	log, err := logger.New(cfg.Env == config.EnvProduction)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "создание логгера:", err)
+		os.Exit(1)
+	}
+	defer func() { _ = log.Sync() }()
+
+	if cfgErr != nil {
+		log.Fatal("некорректная конфигурация", zap.Error(cfgErr))
+	}
+
+	if err := run(cfg, log); err != nil {
+		log.Fatal("приложение завершилось с ошибкой", zap.Error(err))
+	}
+}
+
+func run(cfg config.Config, log *zap.Logger) error {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	httpErrorLog, err := zap.NewStdLogAt(log.Named("http"), zapcore.ErrorLevel)
+	if err != nil {
+		return fmt.Errorf("логгер для http.Server: %w", err)
+	}
+
+	srv := &http.Server{
+		Addr:              cfg.HTTPAddr,
+		Handler:           httpapi.NewRouter(log),
+		ReadHeaderTimeout: 5 * time.Second,
+		ErrorLog:          httpErrorLog,
+	}
+
+	serveErr := make(chan error, 1)
+	go func() {
+		log.Info("HTTP-сервер запущен", zap.String("addr", cfg.HTTPAddr), zap.String("env", cfg.Env))
+		serveErr <- srv.ListenAndServe()
+	}()
+
+	select {
+	case err := <-serveErr:
+		return fmt.Errorf("HTTP-сервер: %w", err)
+	case <-ctx.Done():
+	}
+
+	log.Info("получен сигнал остановки, завершаем работу")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
+	defer cancel()
+
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		return fmt.Errorf("остановка HTTP-сервера: %w", err)
+	}
+
+	log.Info("HTTP-сервер остановлен")
+	return nil
 }
