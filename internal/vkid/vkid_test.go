@@ -25,7 +25,7 @@ func TestRandomValuesFormat(t *testing.T) {
 			t.Errorf("%s = %q: нужно 43–128 символов из [A-Za-z0-9_-]", name, v)
 		}
 	}
-	if NewState() == NewState() {
+	if a, b := NewState(), NewState(); a == b {
 		t.Error("NewState() вернул одинаковые значения")
 	}
 }

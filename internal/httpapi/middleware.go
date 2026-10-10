@@ -30,7 +30,7 @@ func requestLogger(log *zap.Logger) gin.HandlerFunc {
 		}
 
 		switch {
-		case status >= http.StatusInternalServerError:
+		case status >= http.StatusInternalServerError || len(c.Errors) > 0:
 			log.Error("HTTP-запрос", fields...)
 		case status >= http.StatusBadRequest:
 			log.Warn("HTTP-запрос", fields...)
@@ -48,4 +48,10 @@ func recovery(log *zap.Logger) gin.HandlerFunc {
 		)
 		c.AbortWithStatus(http.StatusInternalServerError)
 	})
+}
+
+func privatePage(c *gin.Context) {
+	c.Header("Referrer-Policy", "no-referrer")
+	c.Header("Cache-Control", "no-store")
+	c.Next()
 }

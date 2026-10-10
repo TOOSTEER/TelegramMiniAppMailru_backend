@@ -10,7 +10,7 @@ var optionalKeys = []string{
 	"APP_ENV", "LOG_LEVEL",
 	"HTTP_ADDR", "HTTP_READ_HEADER_TIMEOUT", "SHUTDOWN_TIMEOUT", "HEALTH_TIMEOUT", "HTTP_TRUSTED_PROXIES",
 	"DB_CONNECT_TIMEOUT",
-	"VKID_AUTH_URL", "VKID_REDIRECT_URL", "VKID_SCOPES", "VKID_PROVIDER", "OAUTH_STATE_TTL",
+	"VKID_AUTH_URL", "VKID_TOKEN_URL", "VKID_USERINFO_URL", "VKID_HTTP_TIMEOUT", "VKID_REDIRECT_URL", "VKID_SCOPES", "VKID_PROVIDER", "OAUTH_STATE_TTL",
 }
 
 func setEnv(t *testing.T, env map[string]string) {
@@ -21,6 +21,7 @@ func setEnv(t *testing.T, env map[string]string) {
 	t.Setenv("TG_BOT_TOKEN", "secret")
 	t.Setenv("DATABASE_URL", "postgres://localhost/db")
 	t.Setenv("VKID_CLIENT_ID", "12345")
+	t.Setenv("TG_MINIAPP_URL", "https://t.me/test_bot/app")
 	for k, v := range env {
 		t.Setenv(k, v)
 	}
@@ -47,14 +48,17 @@ func TestLoadDefaults(t *testing.T) {
 			URL:            "postgres://localhost/db",
 			ConnectTimeout: 5 * time.Second,
 		},
-		Telegram: Telegram{Token: "secret"},
+		Telegram: Telegram{Token: "secret", MiniAppURL: "https://t.me/test_bot/app"},
 		VKID: VKID{
 			ClientID:    "12345",
 			AuthURL:     "https://id.vk.ru/authorize",
+			TokenURL:    "https://id.vk.ru/oauth2/auth",
+			UserInfoURL: "https://id.vk.ru/oauth2/user_info",
 			RedirectURL: "http://localhost/oauth/callback",
 			Scopes:      "vkid.personal_info email",
 			Provider:    "mail_ru",
 			StateTTL:    10 * time.Minute,
+			HTTPTimeout: 10 * time.Second,
 		},
 	}
 	if !equal(cfg, want) {
@@ -88,7 +92,7 @@ func TestLoadOverrides(t *testing.T) {
 
 func TestLoadErrors(t *testing.T) {
 	tests := map[string]map[string]string{
-		"missing required":      {"TG_BOT_TOKEN": "", "DATABASE_URL": "", "VKID_CLIENT_ID": ""},
+		"missing required":      {"TG_BOT_TOKEN": "", "DATABASE_URL": "", "VKID_CLIENT_ID": "", "TG_MINIAPP_URL": ""},
 		"relative redirect URL": {"VKID_REDIRECT_URL": "/oauth/callback"},
 		"unknown provider":      {"VKID_PROVIDER": "google"},
 		"invalid APP_ENV":       {"APP_ENV": "prod"},

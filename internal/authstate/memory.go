@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var ErrNotFound = errors.New("state не найден или просрочен")
+var ErrNotFound = errors.New("state не найден, уже использован или просрочен")
 
 type item struct {
 	verifier  string

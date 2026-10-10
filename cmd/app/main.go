@@ -65,7 +65,7 @@ func run(cfg config.Config, log *zap.Logger) error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router, err := httpapi.NewRouter(cfg.HTTP, httpapi.Deps{
+	router, err := httpapi.NewRouter(cfg, httpapi.Deps{
 		Log:    log,
 		DB:     pool,
 		VKID:   vkid.New(cfg.VKID),

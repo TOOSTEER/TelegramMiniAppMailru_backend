@@ -39,16 +39,20 @@ type DB struct {
 }
 
 type Telegram struct {
-	Token string
+	Token      string
+	MiniAppURL string
 }
 
 type VKID struct {
 	ClientID    string
 	AuthURL     string
+	TokenURL    string
+	UserInfoURL string
 	RedirectURL string
 	Scopes      string
 	Provider    string
 	StateTTL    time.Duration
+	HTTPTimeout time.Duration
 }
 
 func Load() (Config, error) {
@@ -97,6 +101,9 @@ func Load() (Config, error) {
 
 	absURL := func(key, fallback string) string {
 		v := getenv(key, fallback)
+		if v == "" {
+			return required(key)
+		}
 		u, err := url.Parse(v)
 		if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
 			errs = append(errs, fmt.Errorf("%s=%q: ожидается абсолютный http(s) URL", key, v))
@@ -127,15 +134,19 @@ func Load() (Config, error) {
 			ConnectTimeout: duration("DB_CONNECT_TIMEOUT", 5*time.Second),
 		},
 		Telegram: Telegram{
-			Token: required("TG_BOT_TOKEN"),
+			Token:      required("TG_BOT_TOKEN"),
+			MiniAppURL: absURL("TG_MINIAPP_URL", ""),
 		},
 		VKID: VKID{
 			ClientID:    required("VKID_CLIENT_ID"),
 			AuthURL:     absURL("VKID_AUTH_URL", "https://id.vk.ru/authorize"),
+			TokenURL:    absURL("VKID_TOKEN_URL", "https://id.vk.ru/oauth2/auth"),
+			UserInfoURL: absURL("VKID_USERINFO_URL", "https://id.vk.ru/oauth2/user_info"),
 			RedirectURL: absURL("VKID_REDIRECT_URL", "http://localhost/oauth/callback"),
 			Scopes:      getenv("VKID_SCOPES", "vkid.personal_info email"),
 			Provider:    oneOf("VKID_PROVIDER", "mail_ru", "mail_ru", "ok_ru", "vkid"),
 			StateTTL:    duration("OAUTH_STATE_TTL", 10*time.Minute),
+			HTTPTimeout: duration("VKID_HTTP_TIMEOUT", 10*time.Second),
 		},
 	}
 
