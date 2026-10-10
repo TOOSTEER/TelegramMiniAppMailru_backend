@@ -9,8 +9,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -18,6 +18,7 @@ import (
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/httpapi"
 	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/logger"
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/storage"
 )
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 
 	cfg, cfgErr := config.Load()
 
-	log, err := logger.New(cfg.Env == config.EnvProduction)
+	log, err := logger.New(cfg.Env == config.EnvProduction, cfg.LogLevel)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "создание логгера:", err)
 		os.Exit(1)
@@ -48,21 +49,40 @@ func run(cfg config.Config, log *zap.Logger) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	pool, err := storage.NewPool(ctx, cfg.DB)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+
+	if err := storage.Migrate(ctx, pool, log.Named("migrations")); err != nil {
+		return err
+	}
+
+	if cfg.Env == config.EnvProduction {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	router, err := httpapi.NewRouter(cfg.HTTP, log, pool)
+	if err != nil {
+		return err
+	}
+
 	httpErrorLog, err := zap.NewStdLogAt(log.Named("http"), zapcore.ErrorLevel)
 	if err != nil {
 		return fmt.Errorf("логгер для http.Server: %w", err)
 	}
 
 	srv := &http.Server{
-		Addr:              cfg.HTTPAddr,
-		Handler:           httpapi.NewRouter(log),
-		ReadHeaderTimeout: 5 * time.Second,
+		Addr:              cfg.HTTP.Addr,
+		Handler:           router,
+		ReadHeaderTimeout: cfg.HTTP.ReadHeaderTimeout,
 		ErrorLog:          httpErrorLog,
 	}
 
 	serveErr := make(chan error, 1)
 	go func() {
-		log.Info("HTTP-сервер запущен", zap.String("addr", cfg.HTTPAddr), zap.String("env", cfg.Env))
+		log.Info("HTTP-сервер запущен", zap.String("addr", cfg.HTTP.Addr), zap.String("env", cfg.Env))
 		serveErr <- srv.ListenAndServe()
 	}()
 
@@ -74,7 +94,7 @@ func run(cfg config.Config, log *zap.Logger) error {
 
 	log.Info("получен сигнал остановки, завершаем работу")
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
 	defer cancel()
 
 	if err := srv.Shutdown(shutdownCtx); err != nil {

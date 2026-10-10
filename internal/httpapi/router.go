@@ -1,23 +1,36 @@
 package httpapi
 
 import (
-	"net/http"
+	"context"
+	"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 )
 
-func NewRouter(log *zap.Logger) *gin.Engine {
+type Pinger interface {
+	Ping(ctx context.Context) error
+}
+
+type handler struct {
+	db            Pinger
+	healthTimeout time.Duration
+}
+
+func NewRouter(cfg config.HTTP, log *zap.Logger, db Pinger) (*gin.Engine, error) {
+	h := &handler{db: db, healthTimeout: cfg.HealthTimeout}
+
 	r := gin.New()
-	_ = r.SetTrustedProxies(nil)
+	if err := r.SetTrustedProxies(cfg.TrustedProxies); err != nil {
+		return nil, fmt.Errorf("доверенные прокси: %w", err)
+	}
 
 	r.Use(requestLogger(log), recovery(log))
 
-	r.GET("/health", health)
+	r.GET("/health", h.health)
 
-	return r
-}
-
-func health(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	return r, nil
 }

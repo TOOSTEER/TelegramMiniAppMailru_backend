@@ -4,16 +4,22 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zaptest/observer"
+
+	"github.com/TOOSTEER/TelegramMiniAppMailru_backend/internal/config"
 )
 
 func TestMiddlewareLogsAndRecoversPanic(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	core, logs := observer.New(zap.InfoLevel)
-	r := NewRouter(zap.New(core))
+	r, err := NewRouter(config.HTTP{HealthTimeout: time.Second}, zap.New(core), fakePinger{})
+	if err != nil {
+		t.Fatal(err)
+	}
 	r.GET("/panic", func(c *gin.Context) { panic("boom") })
 
 	w := httptest.NewRecorder()

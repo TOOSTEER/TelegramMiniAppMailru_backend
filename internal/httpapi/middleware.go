@@ -6,9 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func requestLogger(log *zap.Logger) gin.HandlerFunc {
+	log = log.WithOptions(zap.AddStacktrace(zapcore.FatalLevel))
+
 	return func(c *gin.Context) {
 		start := time.Now()
 
