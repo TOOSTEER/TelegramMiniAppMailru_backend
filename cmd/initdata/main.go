@@ -37,9 +37,13 @@ func main() {
 		fail("user: %v", err)
 	}
 
+	// Настоящий Telegram кладёт в initData поле signature (подпись для проверки третьими
+	// сторонами), и SDK Mini App на фронтенде без него initData не разбирает. Кладём заглушку:
+	// поле входит в подписываемые данные, поэтому hash остаётся корректным.
 	values := url.Values{
 		"user":      {string(user)},
 		"auth_date": {strconv.FormatInt(time.Now().Add(-*age).Unix(), 10)},
+		"signature": {"dev"},
 	}
 	if *startParam != "" {
 		values.Set("start_param", *startParam)
