@@ -121,6 +121,62 @@ func newFakeVKID() *fakeVKID {
 	}
 }
 
+type fakeTelegramProfiles struct {
+	mu       sync.Mutex
+	profiles map[int64]storage.TelegramProfile
+	err      error
+}
+
+func newFakeTelegramProfiles() *fakeTelegramProfiles {
+	return &fakeTelegramProfiles{profiles: make(map[int64]storage.TelegramProfile)}
+}
+
+func (f *fakeTelegramProfiles) Upsert(_ context.Context, p storage.TelegramProfile) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.err != nil {
+		return f.err
+	}
+	existing, ok := f.profiles[p.TelegramID]
+	if ok {
+
+		p.PhoneNumber = existing.PhoneNumber
+		p.PhoneSharedAt = existing.PhoneSharedAt
+	}
+	f.profiles[p.TelegramID] = p
+	return nil
+}
+
+func (f *fakeTelegramProfiles) SavePhone(_ context.Context, telegramID int64, phone string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.err != nil {
+		return f.err
+	}
+	p, ok := f.profiles[telegramID]
+	if !ok {
+		return storage.ErrTelegramProfileNotFound
+	}
+	now := time.Now()
+	p.PhoneNumber = phone
+	p.PhoneSharedAt = &now
+	f.profiles[telegramID] = p
+	return nil
+}
+
+func (f *fakeTelegramProfiles) Find(_ context.Context, telegramID int64) (storage.TelegramProfile, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.err != nil {
+		return storage.TelegramProfile{}, f.err
+	}
+	p, ok := f.profiles[telegramID]
+	if !ok {
+		return storage.TelegramProfile{}, storage.ErrTelegramProfileNotFound
+	}
+	return p, nil
+}
+
 const (
 	testMiniAppURL = "https://t.me/test_bot/app"
 	testBotToken   = "123456:TEST-TOKEN"
@@ -155,6 +211,9 @@ func newTestRouter(t *testing.T, deps Deps) *gin.Engine {
 	}
 	if deps.Sessions == nil {
 		deps.Sessions = &fakeSessions{}
+	}
+	if deps.TelegramProfiles == nil {
+		deps.TelegramProfiles = newFakeTelegramProfiles()
 	}
 
 	r, err := NewRouter(config.Config{

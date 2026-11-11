@@ -67,14 +67,16 @@ func run(cfg config.Config, log *zap.Logger) error {
 
 	vk := vkid.New(cfg.VKID)
 	users := storage.NewUsers(pool)
+	telegramProfiles := storage.NewTelegramProfiles(pool)
 
 	router, err := httpapi.NewRouter(cfg, httpapi.Deps{
-		Log:      log,
-		DB:       pool,
-		VKID:     vk,
-		States:   storage.NewOAuthStates(pool, cfg.VKID.StateTTL),
-		Users:    users,
-		Sessions: vkidsession.New(users, vk, cfg.VKID.RefreshBefore, log.Named("vkid")),
+		Log:              log,
+		DB:               pool,
+		VKID:             vk,
+		States:           storage.NewOAuthStates(pool, cfg.VKID.StateTTL),
+		Users:            users,
+		Sessions:         vkidsession.New(users, vk, cfg.VKID.RefreshBefore, log.Named("vkid")),
+		TelegramProfiles: telegramProfiles,
 	})
 	if err != nil {
 		return err

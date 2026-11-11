@@ -41,24 +41,34 @@ type Sessions interface {
 	AccessToken(ctx context.Context, telegramID int64) (string, error)
 }
 
+type TelegramProfiles interface {
+	Upsert(ctx context.Context, p storage.TelegramProfile) error
+	SavePhone(ctx context.Context, telegramID int64, phone string) error
+	Find(ctx context.Context, telegramID int64) (storage.TelegramProfile, error)
+}
+
 type Deps struct {
-	Log      *zap.Logger
-	DB       Pinger
-	VKID     VKID
-	States   StateStore
-	Users    Users
-	Sessions Sessions
+	Log              *zap.Logger
+	DB               Pinger
+	VKID             VKID
+	States           StateStore
+	Users            Users
+	Sessions         Sessions
+	TelegramProfiles TelegramProfiles
 }
 
 type handler struct {
-	log           *zap.Logger
-	db            Pinger
-	vkid          VKID
-	states        StateStore
-	users         Users
-	sessions      Sessions
-	healthTimeout time.Duration
-	miniAppURL    *url.URL
+	log              *zap.Logger
+	db               Pinger
+	vkid             VKID
+	states           StateStore
+	users            Users
+	sessions         Sessions
+	telegramProfiles TelegramProfiles
+	healthTimeout    time.Duration
+	miniAppURL       *url.URL
+	botToken         string
+	initDataMaxAge   time.Duration
 }
 
 func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
@@ -68,14 +78,17 @@ func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
 	}
 
 	h := &handler{
-		log:           deps.Log,
-		db:            deps.DB,
-		vkid:          deps.VKID,
-		states:        deps.States,
-		users:         deps.Users,
-		sessions:      deps.Sessions,
-		healthTimeout: cfg.HTTP.HealthTimeout,
-		miniAppURL:    miniAppURL,
+		log:              deps.Log,
+		db:               deps.DB,
+		vkid:             deps.VKID,
+		states:           deps.States,
+		users:            deps.Users,
+		sessions:         deps.Sessions,
+		telegramProfiles: deps.TelegramProfiles,
+		healthTimeout:    cfg.HTTP.HealthTimeout,
+		miniAppURL:       miniAppURL,
+		botToken:         cfg.Telegram.Token,
+		initDataMaxAge:   cfg.Telegram.InitDataMaxAge,
 	}
 
 	r := gin.New()
@@ -95,6 +108,10 @@ func NewRouter(cfg config.Config, deps Deps) (*gin.Engine, error) {
 	api.POST("/vkid/login", h.vkidLogin)
 	api.POST("/vkid/logout", h.vkidLogout)
 	api.GET("/vkid/profile", h.vkidProfile)
+
+	api.PUT("/telegram/profile", h.telegramProfileSync)
+	api.GET("/telegram/profile", h.telegramProfileGet)
+	api.POST("/telegram/contact", h.telegramContact)
 
 	return r, nil
 }

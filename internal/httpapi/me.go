@@ -12,8 +12,9 @@ import (
 )
 
 type meResponse struct {
-	TelegramUser tgauth.User `json:"telegram_user"`
-	VKID         vkidStatus  `json:"vkid"`
+	TelegramUser    tgauth.User              `json:"telegram_user"`
+	VKID            vkidStatus               `json:"vkid"`
+	TelegramProfile *telegramProfileResponse `json:"telegram_profile,omitempty"`
 }
 
 type vkidStatus struct {
@@ -37,6 +38,18 @@ func (h *handler) me(c *gin.Context) {
 		return
 	default:
 		resp.VKID = vkidStatus{Linked: true, UserID: u.VKUserID, Name: u.Name, Email: u.Email, LinkedAt: &u.LinkedAt}
+	}
+
+	tp, err := h.telegramProfiles.Find(c.Request.Context(), tgUser.ID)
+	switch {
+	case errors.Is(err, storage.ErrTelegramProfileNotFound):
+	case err != nil:
+		_ = c.Error(err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal"})
+		return
+	default:
+		r := profileToResponse(tp, false)
+		resp.TelegramProfile = &r
 	}
 
 	c.JSON(http.StatusOK, resp)

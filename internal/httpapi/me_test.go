@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -87,6 +88,54 @@ func TestMeNotLinked(t *testing.T) {
 	}
 }
 
+func TestMeContainsTelegramProfile(t *testing.T) {
+	profiles := newFakeTelegramProfiles()
+	r := newTestRouter(t, Deps{TelegramProfiles: profiles})
+	auth := "tma " + testInitData(testBotToken, time.Now())
+
+	w := getWithAuth(t, r, "/api/me", auth)
+	if strings.Contains(w.Body.String(), `"telegram_profile"`) {
+		t.Errorf("без профиля body = %s, telegram_profile не должен появляться", w.Body.String())
+	}
+
+	if w := putWithAuth(t, r, "/api/telegram/profile", auth); w.Code != http.StatusOK {
+		t.Fatalf("PUT profile: status = %d, body: %s", w.Code, w.Body.String())
+	}
+	contactRaw := testContactResponse(testBotToken, time.Now(), 42, "+79991234567")
+	if w := postJSONWithAuth(t, r, "/api/telegram/contact", auth, map[string]string{"contact": contactRaw}); w.Code != http.StatusOK {
+		t.Fatalf("POST contact: status = %d, body: %s", w.Code, w.Body.String())
+	}
+
+	w = getWithAuth(t, r, "/api/me", auth)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200, body: %s", w.Code, w.Body.String())
+	}
+
+	var body struct {
+		TelegramProfile *struct {
+			TelegramID int64  `json:"telegram_id"`
+			FirstName  string `json:"first_name"`
+			HasPhone   bool   `json:"has_phone"`
+			Phone      string `json:"phone_number"`
+		} `json:"telegram_profile"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	if body.TelegramProfile == nil {
+		t.Fatalf("telegram_profile отсутствует в body: %s", w.Body.String())
+	}
+	if body.TelegramProfile.TelegramID != 42 || body.TelegramProfile.FirstName != "Иван" {
+		t.Errorf("telegram_profile = %+v", body.TelegramProfile)
+	}
+	if !body.TelegramProfile.HasPhone {
+		t.Error("has_phone должен быть true после отправки контакта")
+	}
+	if body.TelegramProfile.Phone != "" {
+		t.Errorf("phone_number не должен отдаваться в /api/me, got %q", body.TelegramProfile.Phone)
+	}
+}
+
 func TestMeUnauthorized(t *testing.T) {
 	tests := map[string]struct {
 		authorization string
@@ -121,3 +170,5 @@ func TestMeUnauthorized(t *testing.T) {
 func storageLink(telegramID, vkUserID int64) storage.VKIDLink {
 	return storage.VKIDLink{TelegramID: telegramID, VKUserID: vkUserID, Name: "Ivan Ivanov", Email: "ivan@mail.ru"}
 }
+
+var _ = context.Background
